@@ -1,0 +1,20 @@
+:root {
+  --base-hue: 7; 
+  --darkness: 0.3; 
+  --shifted-hue: calc(var(--base-hue) + 5);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: 
+    linear-gradient(
+      rgba(0, 0, 0, var(--darkness)), 
+      rgba(0, 0, 0, var(--darkness))
+    ),
+    linear-gradient(
+      to bottom, 
+      hsl(var(--base-hue), 70%, 50%), 
+      hsl(var(--shifted-hue), 70%, 50%)
+    );
+}
