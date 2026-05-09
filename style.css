@@ -1,20 +1,66 @@
 :root {
   --base-hue: 7; 
-  --darkness: 0.3; 
-  --shifted-hue: calc(var(--base-hue) + 5);
+  /* Positive = Darker, Negative = Lighter */
+  --darkness: -0.65; 
+  --shifted-hue: calc(var(--base-hue) + 20);
+
+  /* Logic to separate positive and negative values */
+  --dark-alpha: var(--darkness);
+  --light-alpha: calc(var(--darkness) * -1);
 }
 
 body {
   min-height: 100vh;
-  margin: 0;
+  margin: 65px 32px;
   background: 
+    /* White overlay: only visible if --darkness is negative */
     linear-gradient(
-      rgba(0, 0, 0, var(--darkness)), 
-      rgba(0, 0, 0, var(--darkness))
+      rgba(255, 255, 255, max(0, var(--light-alpha))), 
+      rgba(255, 255, 255, max(0, var(--light-alpha)))
+    ),
+    /* Black overlay: only visible if --darkness is positive */
+    linear-gradient(
+      rgba(0, 0, 0, max(0, var(--dark-alpha))), 
+      rgba(0, 0, 0, var(--dark-alpha))
     ),
     linear-gradient(
       to bottom, 
       hsl(var(--base-hue), 70%, 50%), 
       hsl(var(--shifted-hue), 70%, 50%)
     );
+}
+
+.nav-top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.nav-top-right {
+  display: flex;
+  gap: 10px;
+}
+
+h1 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 48px;
+  font-weight: 900;
+  margin: 0;
+}
+
+p {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.header-top-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-nav-top {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
