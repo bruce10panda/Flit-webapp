@@ -1,12 +1,17 @@
 :root {
   --base-hue: 7; 
   /* Positive = Darker, Negative = Lighter */
-  --darkness: -0.65; 
+  --darkness: 0.65; 
   --shifted-hue: calc(var(--base-hue) + 20);
 
   /* Logic to separate positive and negative values */
   --dark-alpha: var(--darkness);
   --light-alpha: calc(var(--darkness) * -1);
+
+  --white-100: #ffffff;
+  --white-65: rgba(255, 255, 255, 0.65);
+  --white-50: rgba(255, 255, 255, 0.5);
+  --white-20: rgba(255, 255, 255, 0.2);
 }
 
 body {
@@ -28,6 +33,10 @@ body {
       hsl(var(--base-hue), 70%, 50%), 
       hsl(var(--shifted-hue), 70%, 50%)
     );
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .nav-top {
@@ -42,9 +51,18 @@ body {
 
 h1 {
   font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 48px;
+  font-size: 40px;
   font-weight: 900;
   margin: 0;
+  color: var(--white-100);
+}
+
+h2 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0;
+  color: var(--white-100);
 }
 
 p {
@@ -52,6 +70,13 @@ p {
   font-size: 16px;
   font-weight: 500;
   margin: 0;
+  color: var(--white-100);
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .header-top-info {
@@ -63,4 +88,92 @@ p {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  color: var(--white-100);
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter {
+  padding: 4px 10px;
+  border-radius: 70px;
+  background: var(--white-20);
+}
+
+.feed {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.post {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  align-self: stretch;
+  width: 100%;
+}
+
+.post-description {
+  display: -webkit-box;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 4;
+align-self: stretch;
+
+overflow: hidden;
+color: rgba(255, 255, 255, 0.65);
+text-overflow: ellipsis;
+font-family: "DM Sans";
+font-size: 16px;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+}
+
+.post-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
+.post-img {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.post-source-info {
+  display: flex;
+  gap: 8px;
+}
+
+.post-source-img {
+  height: 100%;
+  aspect-ratio: 1/1;
+  border-radius: 90px;
+}
+
+.post-info .source {
+  font-size: 12px;
+}
+
+.post-info .author   {
+  font-size: 10px;
+  color: var(--white-50);
+}
+
+.time-since-post {
+  font-size: 10px;
+  color: var(--white-50);
+}
+
+hr {
+  width: 100%;
+  border-color: var(--white-20);
 }
