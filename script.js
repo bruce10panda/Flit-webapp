@@ -21,3 +21,4 @@ const updateTextColor = () => {
 
 // Initial run
 updateTextColor();
+

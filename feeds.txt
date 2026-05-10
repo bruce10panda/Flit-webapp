@@ -1,0 +1,1 @@
+[https://www.theverge.com/rss/index.xml,https://techcrunch.com/feed/,https://9to5mac.com/feed/,https://9to5google.com/feed/,https://www.engadget.com/rss.xml,https://www.wired.com/feed/rss,https://arstechnica.com/feed/,https://www.macrumors.com/macrumors.xml,https://androidcentral.com/feed,https://www.zdnet.com/news/rss.xml]()
