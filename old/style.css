@@ -1,0 +1,195 @@
+:root {
+  --base-hue: 7; 
+  /* Positive = Darker, Negative = Lighter */
+  --darkness: 0.5; 
+  --shifted-hue: calc(var(--base-hue) + 10);
+
+  /* Logic to separate positive and negative values */
+  --dark-alpha: var(--darkness);
+  --light-alpha: calc(var(--darkness) * -1);
+
+  --white-100: #ffffff;
+  --white-65: rgba(255, 255, 255, 0.65);
+  --white-45: rgba(255, 255, 255, 0.5);
+  --white-20: rgba(255, 255, 255, 0.2);
+}
+
+body {
+  min-height: 100vh;
+  margin: 65px 32px;
+  background: 
+    /* White overlay: only visible if --darkness is negative */
+    linear-gradient(
+      rgba(255, 255, 255, max(0, var(--light-alpha))), 
+      rgba(255, 255, 255, max(0, var(--light-alpha)))
+    ),
+    /* Black overlay: only visible if --darkness is positive */
+    linear-gradient(
+      rgba(0, 0, 0, max(0, var(--dark-alpha))), 
+      rgba(0, 0, 0, var(--dark-alpha))
+    ),
+    linear-gradient(
+      to bottom, 
+      hsl(var(--base-hue), 70%, 50%), 
+      hsl(var(--shifted-hue), 70%, 50%)
+    );
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.nav-top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.nav-top-right {
+  display: flex;
+  gap: 10px;
+}
+
+h1 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 40px;
+  font-weight: 900;
+  margin: 0;
+  color: var(--white-100);
+}
+
+h2 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0;
+  color: var(--white-100);
+}
+
+p {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+  color: var(--white-100);
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.header-top-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-nav-top {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  color: var(--white-100);
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter {
+  padding: 4px 10px;
+  border-radius: 70px;
+}
+
+.feed {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.post {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.post-description {
+  display: -webkit-box;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 4;
+align-self: stretch;
+
+overflow: hidden;
+color: rgba(255, 255, 255, 0.65);
+text-overflow: ellipsis;
+font-family: "DM Sans";
+font-size: 16px;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+}
+
+.post-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
+.post-img {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.post-source-info {
+  display: flex;
+  gap: 8px;
+}
+
+.post-source-img {
+  height: 100%;
+  aspect-ratio: 1/1;
+  border-radius: 90px;
+}
+
+.post-info .source {
+  font-size: 12px;
+}
+
+.post-info .author   {
+  font-size: 10px;
+  color: var(--white-50);
+}
+
+.time-since-post {
+  font-size: 10px;
+  color: var(--white-50);
+}
+
+hr {
+  width: 100%;
+  border-color: var(--white-20);
+}
+
+.bg-overlay {
+  position: relative;
+}
+
+.bg-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  mix-blend-mode: overlay;
+  z-index: -1;
+  border-radius: 16px;
+}

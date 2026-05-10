@@ -15,9 +15,11 @@
   <body>
         <div class="top">
           <div class="header-nav-top">
-            <div class="nav-top">
-              <span class="material-symbols-rounded">left_panel_open</span>
-              <div class="nav-top-right">
+            <div class="nav-top-all">
+              <div class="nav-top overlay">
+                <span class="material-symbols-rounded">left_panel_open</span>
+              </div>
+              <div class="nav-top overlay">
                 <span class="material-symbols-rounded">refresh</span>
                 <span class="material-symbols-rounded">search</span>
               </div>
@@ -28,69 +30,27 @@
             </div>
           </div>
           <div class="filters">
-            <div class="filter"><p>Google</p></div>
-            <div class="filter"><p>Apple</p></div>
+            <div class="filter overlay"><p>Google</p></div>
+            <div class="filter overlay"><p>Apple</p></div>
           </div>
         </div>
 
         <div class="feed">
-          <div class="post-bg">
-            <div class="post">
-              <img src="./assets/post-img-temp.png" class="post-img">
-              <h2 class="post-title">Google’s new gradient icon design is coming to more apps</h2>
-              <p class="post-description">In late 2025, Google started rolling out new icons with a gradient design. Now it seems the new look is coming to the rest of Google’s apps. 9to5Google got its hands on images of the new icons that ditch the uniform circle design that tries to cram in every color of the Google logo.</p>
-              <div class="post-info">
-                <div class="post-source-info">
-                  <img src="./assets/post-source-temp.png" class="post-source-img">
-                  <div>
-                    <p class="source">The Verge</p>
-                    <p class="author">Hayden Field</p>
-                  </div>
-                </div>
-                <p class="time-since-post">12H</p>
-              </div>
+          <p class="feed-name">All Posts</p>
+          <div class="post overlay">
+            <div class="source">
+              <img src="./assets/post-source-temp.png" alt="Source Icon">
+              <p class="source-name">The Verge</p>
             </div>
-          </div>
-
-          <hr>
-
-          <div class="post-bg">
-            <div class="post">
-              <img src="./assets/post-img-temp.png" class="post-img">
-              <h2 class="post-title">Google’s new gradient icon design is coming to more apps</h2>
-              <p class="post-description">In late 2025, Google started rolling out new icons with a gradient design. Now it seems the new look is coming to the rest of Google’s apps. 9to5Google got its hands on images of the new icons that ditch the uniform circle design that tries to cram in every color of the Google logo.</p>
-              <div class="post-info">
-                <div class="post-source-info">
-                  <img src="./assets/post-source-temp.png" class="post-source-img">
-                  <div>
-                    <p class="source">The Verge</p>
-                    <p class="author">Hayden Field</p>
-                  </div>
-                </div>
-                <p class="time-since-post">12H</p>
-              </div>
-            </div>
-          </div>
-
-          <hr>
-
-          <div class="post-bg">
-            <div class="post">
-              <img src="./assets/post-img-temp.png" class="post-img">
-              <h2 class="post-title">Google’s new gradient icon design is coming to more apps</h2>
-              <p class="post-description">In late 2025, Google started rolling out new icons with a gradient design. Now it seems the new look is coming to the rest of Google’s apps. 9to5Google got its hands on images of the new icons that ditch the uniform circle design that tries to cram in every color of the Google logo.</p>
-              <div class="post-info">
-                <div class="post-source-info">
-                  <img src="./assets/post-source-temp.png" class="post-source-img">
-                  <div>
-                    <p class="source">The Verge</p>
-                    <p class="author">Hayden Field</p>
-                  </div>
-                </div>
-                <p class="time-since-post">12H</p>
-              </div>
+            <img class="post-image" src="./assets/post-img-temp.png" alt="Post Image">
+            <h2 class="title">Google’s new gradient icon design is coming to more apps</h2>
+            <p class="description">In late 2025, Google started rolling out new icons with a gradient design. Now it seems the new look is coming to the rest of Google’s apps. 9to5Google got its hands on images of the new icons that ditch the uniform circle design that tries to cram in every color of the Google logo.</p>
+            <div class="author-time">
+              <p class="author">Hayden Field</p>
+              <p class="time">12H</p>
             </div>
           </div>
         </div>
   </body>
+  <script src="./script.js"></script>
 </html>
