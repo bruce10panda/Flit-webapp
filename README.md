@@ -21,3 +21,5 @@ Fwip is a customizable RSS reader, with support for podcasts, youtube, Twitter/X
 
 It's in ```development```
 
+## Where's the app?
+it's in another repository for now. https://github.com/bruce10panda/Fwip
