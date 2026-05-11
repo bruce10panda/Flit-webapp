@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Fwip</title>
     <link rel="stylesheet" href="styles/global.css">
-    <link rel="stylesheet" href="styles/index.css">
+    <link rel="stylesheet" href="styles/article.css">
     <link rel="icon" href="./assets/icon.png" type="image/x-icon">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,40 +18,33 @@
           <div class="header-nav-top">
             <div class="nav-top-all">
               <div class="nav-top overlay">
-                <span class="material-symbols-rounded">left_panel_open</span>
+                <span class="material-symbols-rounded">arrow_back_ios_new</span>
               </div>
               <div class="nav-top overlay">
-                <span class="material-symbols-rounded">refresh</span>
-                <span class="material-symbols-rounded">search</span>
+                <span class="material-symbols-rounded">bookmark</span>
+                <span class="material-symbols-rounded">ios_share</span>
               </div>
             </div>
-            <div class="header-top-info">
-              <h1>Home</h1> 
-              <p>All Feeds</p>
-            </div>
-          </div>
-          <div class="filters">
-            <div class="filter overlay"><p>Google</p></div>
-            <div class="filter overlay"><p>Apple</p></div>
           </div>
         </div>
 
-        <div class="feed">
-          <p class="feed-name">All Posts</p>
-          <div class="post overlay">
+
+          <div class="post">
             <div class="source">
-              <img src="./assets/post-source-temp.png" alt="Source Icon">
-              <p class="source-name">The Verge</p>
+              <div  class="source-info">
+                <img src="./assets/post-source-temp.png" alt="Source Icon">
+                <div class="source-author">
+                    <p class="source-name">The Verge</p>
+                    <p class="author">Hayden Field</p>
+                </div>
+              </div>
+              <p class="time">12H</p>
             </div>
             <img class="post-image" src="./assets/post-img-temp.png" alt="Post Image">
             <h2 class="title">Google’s new gradient icon design is coming to more apps</h2>
             <p class="description">In late 2025, Google started rolling out new icons with a gradient design. Now it seems the new look is coming to the rest of Google’s apps. 9to5Google got its hands on images of the new icons that ditch the uniform circle design that tries to cram in every color of the Google logo.</p>
-            <div class="author-time">
-              <p class="author">Hayden Field</p>
-              <p class="time">12H</p>
-            </div>
           </div>
-        </div>
+
   </body>
   <script src="scripts/script.js"></script>
   <script src="scripts/reader.js"></script>

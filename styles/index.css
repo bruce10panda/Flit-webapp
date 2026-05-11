@@ -1,0 +1,49 @@
+.feed {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.feed-name {
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.post {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.source {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-color-65);
+    font-weight: 500;
+}
+
+.post .source img {
+    border-radius: 50%;
+    width: 16px;
+}
+
+.post-image {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.description {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+}
+
+.author-time {
+    display: flex;
+    justify-content: space-between;
+}

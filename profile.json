@@ -1,0 +1,29 @@
+{
+    "spaces": [
+        {
+            "name": "Tech",
+            "theme": {
+                "base-hue": 0,
+                "hue-offset": 20,
+                "saturation": 100,
+                "lightness": -0.8
+            },
+            "feeds": [
+                "https://www.theverge.com/rss/index.xml",
+                "https://techcrunch.com/feed/",
+                "https://9to5mac.com/feed/",
+                "https://9to5google.com/feed/",
+                "https://www.engadget.com/rss.xml",
+                "https://arstechnica.com/feed/",
+                "https://www.macrumors.com/macrumors.xml",
+                "https://androidcentral.com/feed"
+            ],
+            "preferences": {
+            }
+        }
+    ],
+    "settings": {
+        "global_user_id": "user_8829",
+        "language": "en-US"
+    }
+}
