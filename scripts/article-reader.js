@@ -1,6 +1,5 @@
 /**
  * article-reader.js
- * Handles fetching, parsing, and displaying full article content using Readability.js
  */
 
 const proxySources = [
@@ -9,12 +8,21 @@ const proxySources = [
     'https://api.codetabs.com/v1/proxy?quest=',
 ];
 
-/**
- * Fetch HTML content through proxies to bypass CORS
- */
+function normalizeSrc(src) {
+    return src?.trim().replace(/\/?(?:\?.*)?$/, '').replace(/\/+$/, '');
+}
+
+function getTimeAgo(dateStr) {
+    const date = new Date(dateStr);
+    const seconds = Math.floor((new Date() - date) / 1000);
+    const hours = Math.floor(seconds / 3600);
+    if (hours < 1) return 'Just now';
+    if (hours < 24) return `${hours}H`;
+    return `${Math.floor(hours / 24)}D`;
+}
+
 async function fetchArticleHTML(url) {
     const attempts = proxySources.map(proxy => fetch(proxy + encodeURIComponent(url)));
-
     try {
         const response = await Promise.any(attempts);
         return await response.text();
@@ -25,121 +33,84 @@ async function fetchArticleHTML(url) {
 }
 
 /**
- * Main logic to parse and render the article
+ * article-reader.js (Updated)
  */
+
 async function loadArticle() {
-    // 1. Get the URL from the query parameter (e.g., article.html?url=...)
     const urlParams = new URLSearchParams(window.location.search);
     const articleUrl = urlParams.get('url');
+    const savedData = JSON.parse(sessionStorage.getItem('currentPostData'));
 
-    if (!articleUrl) {
-        console.error("No article URL provided in query string.");
-        return;
-    }
+    if (!articleUrl) return;
 
-    // Get post data from sessionStorage
-    const postDataStr = sessionStorage.getItem('currentPostData');
-    const postData = postDataStr ? JSON.parse(postDataStr) : null;
-
-    // Reference existing UI elements from article.html
     const postContainer = document.querySelector('.post');
     const titleEl = document.querySelector('.title');
     const sourceNameEl = document.querySelector('.source-name');
+    const sourceImgEl = document.querySelector('.source-info img');
     const authorEl = document.querySelector('.author');
-    const postImage = document.querySelector('.post-image');
-    const sourceIcon = document.querySelector('.source img');
     const timeEl = document.querySelector('.time');
+    
+    // Remove the template image
+    const tempImage = document.querySelector('.post-image');
+    if (tempImage) tempImage.remove();
 
-    // Show loading state
-    titleEl.textContent = "Loading article...";
+    // 1. Set Metadata & Top Image from RSS
+    if (savedData) {
+        titleEl.textContent = savedData.title;
+        sourceNameEl.textContent = savedData.feedTitle;
+        authorEl.textContent = savedData.author;
+        timeEl.textContent = getTimeAgo(savedData.date);
+        sourceImgEl.src = savedData.feedImage || `https://www.google.com/s2/favicons?sz=64&domain=${articleUrl}`;
+
+        if (savedData.image) {
+            const firstImg = document.createElement('img');
+            firstImg.className = 'post-image main-article-img'; // Added a specific class
+            firstImg.src = savedData.image;
+            titleEl.parentNode.insertBefore(firstImg, titleEl);
+        }
+    }
+
+    titleEl.textContent = "Loading content...";
 
     const html = await fetchArticleHTML(articleUrl);
 
     if (html) {
         const doc = new DOMParser().parseFromString(html, 'text/html');
-        
-        // Ensure Readability can find images by fixing relative paths
-        const base = doc.createElement('base');
-        base.href = articleUrl;
-        doc.head.appendChild(base);
-
-        // 2. Use Mozilla Readability
-        const reader = new Readability(doc);{"error":"Response exceeds 1MB size limit. Upgrade at https://corsproxy.io/pricing/"}
+        const reader = new Readability(doc);
         const article = reader.parse();
 
         if (article) {
-            // Update UI with parsed data
             titleEl.textContent = article.title;
-            sourceNameEl.textContent = postData?.feedTitle || article.siteName || new URL(articleUrl).hostname;
-            authorEl.textContent = postData?.author || article.byline || "Unknown Author";
             
-            // Update source icon from RSS feed data
-            if (postData?.feedImage) {
-                sourceIcon.src = postData.feedImage;
-            } else {
-                // Fallback to favicon if no RSS image
-                sourceIcon.src = `https://www.google.com/s2/favicons?sz=64&domain=${articleUrl}`;
-            }
-            
-            // Update time from RSS feed data
-            if (postData?.date) {
-                const date = new Date(postData.date);
-                const hours = Math.floor((new Date() - date) / (1000 * 60 * 60));
-                timeEl.textContent = hours < 1 ? 'Just now' : (hours < 24 ? `${hours}H` : `${Math.floor(hours / 24)}D`);
-            }
-
-            // Extract first image from article content and put it at the top
-            let firstImage = null;
-            if (article.content) {
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = article.content;
-                const img = tempDiv.querySelector('img');
-                if (img) {
-                    firstImage = img.src;
-                    // Remove the image from content
-                    img.remove();
-                    article.content = tempDiv.innerHTML;
-                }
-            }
-
-            // Remove the placeholder image
-            if (postImage) {
-                postImage.remove();
-            }
-
-            // 3. Create the content container
             const contentDiv = document.createElement('div');
             contentDiv.className = 'article-content';
             
-            // If we found a first image, add it at the top
-            if (firstImage) {
-                const topImage = document.createElement('img');
-                topImage.src = firstImage;
-                topImage.className = 'post-image';
-                topImage.alt = 'Article Image';
-                topImage.onerror = () => topImage.remove();
-                contentDiv.appendChild(topImage);
-            }
-            
-            // Set the innerHTML (Readability cleans the HTML for us)
-            const contentEl = document.createElement('div');
-            contentEl.innerHTML = article.content;
-            contentDiv.appendChild(contentEl);
+            // --- FIX 1: REMOVE DUPLICATE IMAGES ---
+            // Create a temporary container to clean the parsed article HTML.
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = article.content;
 
-            // Append to the .post container after the header info
+            const topImageSrc = savedData && savedData.image ? normalizeSrc(savedData.image) : null;
+            const seenImages = new Set();
+
+            tempDiv.querySelectorAll('img').forEach(img => {
+                const imgSrc = normalizeSrc(img.src || img.getAttribute('src') || '');
+                if (!imgSrc || imgSrc === topImageSrc || seenImages.has(imgSrc)) {
+                    img.remove();
+                    return;
+                }
+                seenImages.add(imgSrc);
+                img.alt = img.alt || 'Article image';
+            });
+
+            contentDiv.innerHTML = tempDiv.innerHTML;
             postContainer.appendChild(contentDiv);
-        } else {
-            titleEl.textContent = "Unable to parse article content.";
         }
-    } else {
-        titleEl.textContent = "Failed to load article.";
     }
 }
 
-// Initialize on load
 document.addEventListener('DOMContentLoaded', loadArticle);
 
-// Back button functionality
 const backBtn = document.querySelector('.nav-top.overlay:first-child');
 if (backBtn) {
     backBtn.style.cursor = 'pointer';
