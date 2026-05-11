@@ -96,39 +96,63 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let allPosts = [];
 
-    // 1. Fetch all feeds
+    // 1. Fetch all feeds in parallel
     const feedPromises = feedUrls.map(async (url) => {
       const xmlDoc = await fetchFeed(url);
       if (!xmlDoc) return;
 
-      const feedTitle = xmlDoc.querySelector('channel > title, feed > title')?.textContent || 'Feed';
+      // Extract the name of the publication/website
+      const feedTitle = xmlDoc.querySelector('channel > title, feed > title')?.textContent?.trim() || 'Unknown Source';
       const items = Array.from(xmlDoc.querySelectorAll('item, entry'));
 
       items.forEach(item => {
         const pubDateStr = item.querySelector('pubDate, published, updated')?.textContent;
-        const postDate = pubDateStr ? new Date(pubDateStr) : new Date(0); // Fallback to epoch if no date
+        const postDate = pubDateStr ? new Date(pubDateStr) : new Date(0);
+
+        // --- IMPROVED AUTHOR LOGIC ---
+        // 1. Check common RSS/Atom author tags
+        const authorEl = item.querySelector('dc\\:creator, creator, author > name, author');
+        let authorName = authorEl ? authorEl.textContent.trim() : '';
+
+        // 2. Clean up email-style authors: "email@site.com (Name)" -> "Name"
+        if (authorName.includes('@') && authorName.includes('(')) {
+          authorName = authorName.match(/\(([^)]+)\)/)?.[1] || authorName;
+        }
+
+        // 3. Fallback: If empty, generic "Staff", or an email, use the Site Name instead
+        const finalAuthor = (authorName && 
+                             authorName.toLowerCase() !== 'staff' && 
+                             !authorName.includes('@')) 
+                             ? authorName 
+                             : feedTitle;
 
         allPosts.push({
           feedTitle: feedTitle,
-          title: item.querySelector('title')?.textContent || 'Untitled',
-          link: item.querySelector('link')?.getAttribute('href') || item.querySelector('link')?.textContent,
-          author: item.querySelector('author name, dc\\:creator, author')?.textContent || 'Staff',
+          title: item.querySelector('title')?.textContent?.trim() || 'Untitled',
+          link: item.querySelector('link')?.getAttribute('href') || item.querySelector('link')?.textContent?.trim(),
+          author: finalAuthor,
           description: (item.querySelector('description, summary')?.textContent || '')
-                        .replace(/<[^>]+>/g, '').slice(0, 150) + '...',
+                        .replace(/<[^>]+>/g, '') // Strip HTML tags
+                        .trim()
+                        .slice(0, 150) + '...',
           image: extractImage(item),
           date: postDate
         });
       });
     });
 
-    // Wait for all fetches to complete
+    // Wait for all fetches to finish
     await Promise.all(feedPromises);
 
-    // 2. Sort all collected posts by date (newest first)
+    // 2. Global Sort: Newest to Oldest
     allPosts.sort((a, b) => b.date - a.date);
 
-    // 3. Render the top 30 posts (or however many you prefer)
-    renderPosts(allPosts.slice(0, 30));
+    // 3. Render result (Top 30)
+    if (allPosts.length > 0) {
+      renderPosts(allPosts.slice(0, 30));
+    } else {
+      feedContainer.innerHTML = '<p class="feed-name">No posts found in any feeds.</p>';
+    }
 
   } catch (err) {
     console.error("Initialization Error:", err);
