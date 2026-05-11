@@ -1,7 +1,7 @@
 :root {
   /* 1. Inputs */
-  --base-h: 20;
-  --saturation: 100%;      /* "Greyness": 0% is grey, 100% is vivid */
+  --base-h: 240;
+  --saturation: 50%;      /* "Greyness": 0% is grey, 100% is vivid */
   --lightness-offset: -0.8; /* -1 (Black box) to 1 (White box) */
 
   /* 2. Overlay Math */

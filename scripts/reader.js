@@ -89,25 +89,29 @@ function renderPosts(allPosts) {
  */
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    const response = await fetch(SOURCES_FILE);
-    if (!response.ok) throw new Error('Could not find feeds.txt');
-    
-    const rawText = await response.text();
-    const feedUrls = rawText.split(',').map(url => url.trim()).filter(url => url.length > 0);
+    // 1. Fetch profile.json instead of feeds.txt
+    const profileRes = await fetch('profile.json');
+    if (!profileRes.ok) throw new Error('Could not find profile.json');
+    const profile = await profileRes.json();
 
-    feedContainer.innerHTML = `<p class="feed-name">Loading and sorting feeds...</p>`;
+    // 2. Apply Theme from the first space
+    const activeSpace = profile.spaces[0]; 
+    if (activeSpace && typeof applyProfileTheme === 'function') {
+        applyProfileTheme(activeSpace.theme);
+        // Update UI labels
+        document.querySelector('h1').textContent = activeSpace.name;
+    }
+
+    const feedUrls = activeSpace.feeds || [];
+    feedContainer.innerHTML = `<p class="feed-name">Loading ${activeSpace.name}...</p>`;
 
     let allPosts = [];
 
-    // 1. Fetch all feeds in parallel
     const feedPromises = feedUrls.map(async (url) => {
       const xmlDoc = await fetchFeed(url);
       if (!xmlDoc) return;
 
-      // Extract the name of the publication/website
       const feedTitle = xmlDoc.querySelector('channel > title, feed > title')?.textContent?.trim() || 'Unknown Source';
-      
-      // Extract feed image/icon from RSS
       const feedImage = xmlDoc.querySelector('channel > image > url, feed > logo')?.textContent?.trim() || 
                        xmlDoc.querySelector('channel > image')?.getAttribute('url') || null;
       
@@ -116,21 +120,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       items.forEach(item => {
         const pubDateStr = item.querySelector('pubDate, published, updated')?.textContent;
         const postDate = pubDateStr ? new Date(pubDateStr) : new Date(0);
-
-        // --- IMPROVED AUTHOR LOGIC ---
-        // 1. Check common RSS/Atom author tags
         const authorEl = item.querySelector('dc\\:creator, creator, author > name, author');
         let authorName = authorEl ? authorEl.textContent.trim() : '';
 
-        // 2. Clean up email-style authors: "email@site.com (Name)" -> "Name"
         if (authorName.includes('@') && authorName.includes('(')) {
           authorName = authorName.match(/\(([^)]+)\)/)?.[1] || authorName;
         }
 
-        // 3. Fallback: If empty, generic "Staff", or an email, use the Site Name instead
-        const finalAuthor = (authorName && 
-                             authorName.toLowerCase() !== 'staff' && 
-                             !authorName.includes('@')) 
+        const finalAuthor = (authorName && authorName.toLowerCase() !== 'staff' && !authorName.includes('@')) 
                              ? authorName 
                              : feedTitle;
 
@@ -140,31 +137,24 @@ document.addEventListener('DOMContentLoaded', async () => {
           title: item.querySelector('title')?.textContent?.trim() || 'Untitled',
           link: item.querySelector('link')?.getAttribute('href') || item.querySelector('link')?.textContent?.trim(),
           author: finalAuthor,
-          description: (item.querySelector('description, summary')?.textContent || '')
-                        .replace(/<[^>]+>/g, '') // Strip HTML tags
-                        .trim()
-                        .slice(0, 150) + '...',
+          description: (item.querySelector('description, summary')?.textContent || '').replace(/<[^>]+>/g, '').trim().slice(0, 150) + '...',
           image: extractImage(item),
           date: postDate
         });
       });
     });
 
-    // Wait for all fetches to finish
     await Promise.all(feedPromises);
-
-    // 2. Global Sort: Newest to Oldest
     allPosts.sort((a, b) => b.date - a.date);
 
-    // 3. Render result (Top 30)
     if (allPosts.length > 0) {
       renderPosts(allPosts.slice(0, 30));
     } else {
-      feedContainer.innerHTML = '<p class="feed-name">No posts found in any feeds.</p>';
+      feedContainer.innerHTML = '<p class="feed-name">No posts found.</p>';
     }
 
   } catch (err) {
     console.error("Initialization Error:", err);
-    feedContainer.innerHTML = '<p class="feed-name">Error loading feed sources.</p>';
+    feedContainer.innerHTML = '<p class="feed-name">Error loading profile.</p>';
   }
 });

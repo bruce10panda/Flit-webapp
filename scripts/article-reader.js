@@ -37,6 +37,15 @@ async function fetchArticleHTML(url) {
  */
 
 async function loadArticle() {
+
+    try {
+        const profileRes = await fetch('profile.json');
+        const profile = await profileRes.json();
+        if (profile.spaces[0] && typeof applyProfileTheme === 'function') {
+            applyProfileTheme(profile.spaces[0].theme);
+        }
+    } catch (e) { console.error("Theme load failed", e); }
+
     const urlParams = new URLSearchParams(window.location.search);
     const articleUrl = urlParams.get('url');
     const savedData = JSON.parse(sessionStorage.getItem('currentPostData'));

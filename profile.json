@@ -1,22 +1,18 @@
 {
     "spaces": [
         {
-            "name": "Tech",
+            "name": "Apple News",
             "theme": {
-                "base-hue": 0,
+                "base-hue": 240,
                 "hue-offset": 20,
-                "saturation": 100,
+                "saturation": 50,
                 "lightness": -0.8
             },
             "feeds": [
-                "https://www.theverge.com/rss/index.xml",
-                "https://techcrunch.com/feed/",
                 "https://9to5mac.com/feed/",
-                "https://9to5google.com/feed/",
-                "https://www.engadget.com/rss.xml",
-                "https://arstechnica.com/feed/",
                 "https://www.macrumors.com/macrumors.xml",
-                "https://androidcentral.com/feed"
+                "https://www.macworld.com/index.rss",
+                "https://sixcolors.com/feed/"
             ],
             "preferences": {
             }

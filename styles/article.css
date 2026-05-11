@@ -113,3 +113,13 @@ img, video { max-width: 100%; height: auto; }
     border-top: 1px solid var(--text-color-50);
     text-align: center;
 }
+
+.source img {
+    width: 32px;
+    height: 32px;
+}
+
+p, li {
+    color: var(--text-color-65) !important;
+    mix-blend-mode: plus-lighter !important;
+}
