@@ -61,7 +61,10 @@ function renderPosts(allPosts) {
   allPosts.forEach(postData => {
     const post = document.createElement('div');
     post.className = 'post overlay';
-    post.onclick = () => window.open(postData.link, '_blank');
+    post.onclick = () => {
+      sessionStorage.setItem('currentPostData', JSON.stringify(postData));
+      window.location.href = `article.html?url=${encodeURIComponent(postData.link)}`;
+    };
 
     post.innerHTML = `
       <div class="source">
@@ -103,6 +106,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // Extract the name of the publication/website
       const feedTitle = xmlDoc.querySelector('channel > title, feed > title')?.textContent?.trim() || 'Unknown Source';
+      
+      // Extract feed image/icon from RSS
+      const feedImage = xmlDoc.querySelector('channel > image > url, feed > logo')?.textContent?.trim() || 
+                       xmlDoc.querySelector('channel > image')?.getAttribute('url') || null;
+      
       const items = Array.from(xmlDoc.querySelectorAll('item, entry'));
 
       items.forEach(item => {
@@ -128,6 +136,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         allPosts.push({
           feedTitle: feedTitle,
+          feedImage: feedImage,
           title: item.querySelector('title')?.textContent?.trim() || 'Untitled',
           link: item.querySelector('link')?.getAttribute('href') || item.querySelector('link')?.textContent?.trim(),
           author: finalAuthor,
