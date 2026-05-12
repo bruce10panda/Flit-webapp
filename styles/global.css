@@ -18,6 +18,8 @@
   --text-color-100: hsl(0, 0%, 100%);
   --text-color-65: hsla(0, 0%, 100%, 0.65);
   --text-color-50: hsla(0, 0%, 100%, 0.5);
+
+  -webkit-tap-highlight-color: transparent;
 }
 
 html {
@@ -29,6 +31,7 @@ body {
   color: var(--text-color-100);
   margin: 0;
   padding: 16px;
+  padding-top: 62px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;

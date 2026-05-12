@@ -8,6 +8,15 @@ const proxySources = [
     'https://api.codetabs.com/v1/proxy?quest=',
 ];
 
+// URLs or fragments of URLs for UI badges/ads that should never be shown
+const imageBlacklist = [
+    'google-preferred-source',
+    'follow-us-on-google-news',
+    'badge',
+    'social-share',
+    'subscribe-button'
+];
+
 function normalizeSrc(src) {
     return src?.trim().replace(/\/?(?:\?.*)?$/, '').replace(/\/+$/, '');
 }
@@ -32,12 +41,7 @@ async function fetchArticleHTML(url) {
     }
 }
 
-/**
- * article-reader.js (Updated)
- */
-
 async function loadArticle() {
-
     try {
         const profileRes = await fetch('profile.json');
         const profile = await profileRes.json();
@@ -59,11 +63,9 @@ async function loadArticle() {
     const authorEl = document.querySelector('.author');
     const timeEl = document.querySelector('.time');
     
-    // Remove the template image
     const tempImage = document.querySelector('.post-image');
     if (tempImage) tempImage.remove();
 
-    // 1. Set Metadata & Top Image from RSS
     if (savedData) {
         titleEl.textContent = savedData.title;
         sourceNameEl.textContent = savedData.feedTitle;
@@ -73,7 +75,7 @@ async function loadArticle() {
 
         if (savedData.image) {
             const firstImg = document.createElement('img');
-            firstImg.className = 'post-image main-article-img'; // Added a specific class
+            firstImg.className = 'post-image main-article-img';
             firstImg.src = savedData.image;
             titleEl.parentNode.insertBefore(firstImg, titleEl);
         }
@@ -94,20 +96,73 @@ async function loadArticle() {
             const contentDiv = document.createElement('div');
             contentDiv.className = 'article-content';
             
-            // --- FIX 1: REMOVE DUPLICATE IMAGES ---
-            // Create a temporary container to clean the parsed article HTML.
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = article.content;
 
+            // --- FILTER & HARD CUTOFF LOGIC ---
+            const cutoffPhrases = [
+                'popular stories', 
+                'recommended for you', 
+                'read more', 
+                'what do you think', 
+                'leave a comment',
+                'sponsored content',
+                'advertisement',
+                'more from',
+                'share this',
+                'related'
+            ];
+
+            let reachedEnd = false;
+            const elements = Array.from(tempDiv.querySelectorAll('p, h1, h2, h3, h4, div, section, hr, center'));
+
+            elements.forEach(el => {
+                if (reachedEnd) {
+                    el.remove();
+                    return;
+                }
+
+                const text = el.textContent.trim().toLowerCase();
+                const isMatch = cutoffPhrases.some(phrase => 
+                    text === phrase || 
+                    text.startsWith(phrase + ':') || 
+                    (text.length < 60 && text.includes(phrase))
+                );
+
+                if (isMatch) {
+                    reachedEnd = true;
+                    el.remove();
+                }
+
+                // Check for specific social/news links
+                if (el.tagName === 'A' || el.querySelector('a')) {
+                    const links = el.tagName === 'A' ? [el] : Array.from(el.querySelectorAll('a'));
+                    links.forEach(link => {
+                        const href = link.href.toLowerCase();
+                        if (href.includes('news.google.com') || href.includes('facebook.com/sharer')) {
+                            el.remove(); 
+                        }
+                    });
+                }
+            });
+
+            // --- IMAGE CLEANUP & BLACKLIST ---
             const topImageSrc = savedData && savedData.image ? normalizeSrc(savedData.image) : null;
             const seenImages = new Set();
 
             tempDiv.querySelectorAll('img').forEach(img => {
-                const imgSrc = normalizeSrc(img.src || img.getAttribute('src') || '');
-                if (!imgSrc || imgSrc === topImageSrc || seenImages.has(imgSrc)) {
+                const rawSrc = img.src || img.getAttribute('src') || '';
+                const imgSrc = normalizeSrc(rawSrc);
+
+                // 1. Check if image URL contains blacklisted keywords (e.g., google-preferred-source)
+                const isBlacklisted = imageBlacklist.some(term => rawSrc.toLowerCase().includes(term));
+
+                // 2. Remove if blacklisted, empty, duplicate of top image, or already seen
+                if (isBlacklisted || !imgSrc || imgSrc === topImageSrc || seenImages.has(imgSrc)) {
                     img.remove();
                     return;
                 }
+                
                 seenImages.add(imgSrc);
                 img.alt = img.alt || 'Article image';
             });
