@@ -12,14 +12,16 @@
                 "https://9to5mac.com/feed/",
                 "https://www.macrumors.com/macrumors.xml",
                 "https://www.macworld.com/index.rss",
-                "https://sixcolors.com/feed/"
-            ],
-            "preferences": {
-            }
+                "https://sixcolors.com/feed/",
+                "https://theverge.com/rss/index.xml"
+            ]
         }
     ],
     "settings": {
         "global_user_id": "user_8829",
         "language": "en-US"
+    },
+    "preferences": {
+        "experimental_reader": true
     }
 }

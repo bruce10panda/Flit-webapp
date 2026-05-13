@@ -7,7 +7,7 @@
 }
 
 .post { gap: 20px; }
-.article-content { gap: 16px; line-height: 1.75; color: var(--text-color-100); }
+.article-content { gap: 0; line-height: 1.8; color: var(--text-color-100); }
 
 .post .title {
     margin: 0;
@@ -38,27 +38,53 @@
     gap: 8px;
 }
 
-/* Typography & Headers */
+/* ── Typography & Headers ── */
 .article-content h1, .article-content h2, .article-content h3,
 .article-content h4, .article-content h5, .article-content h6 {
-    margin: 20px 0 10px 0;
+    margin: 2rem 0 0.6rem 0;
     color: var(--text-color-100);
     font-family: 'Bricolage Grotesque', sans-serif;
     line-height: 1.2;
+    letter-spacing: -0.01em;
 }
 
+.article-content h1 { font-size: 1.6rem; }
+.article-content h2 { font-size: 1.35rem; }
+.article-content h3 { font-size: 1.15rem; }
+.article-content h4, .article-content h5, .article-content h6 { font-size: 1rem; }
+
 .article-content p {
-    margin: 0 0 1.5rem 0;
-    font-size: 1rem;
+    margin: 0 0 1.4rem 0;
+    font-size: 1.05rem;
+    color: var(--text-color-100);
+    mix-blend-mode: plus-lighter;
+    opacity: 0.88;
 }
 
 .article-content p:last-child { margin-bottom: 0; }
 
+/* ── Short/source label paragraphs (1–4 words) ──
+   Targets <p> whose trimmed text is very short — treated as captions/labels */
+.article-content p:where([data-label]) {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.45;
+    margin: -0.6rem 0 1rem 0;
+}
+
+/* ── "Summary created by" / AI-label hider ── */
+.article-content p[data-summary-label] {
+    display: none;
+}
+
+/* Source / author */
 .source-author .author, .time, .article-meta p {
     color: var(--text-color-65);
 }
 
-/* Media Elements */
+/* ── Media Elements ── */
 img, video { max-width: 100%; height: auto; }
 
 .source img { border-radius: 50%; height: 100%; width: auto; }
@@ -71,44 +97,133 @@ img, video { max-width: 100%; height: auto; }
 
 .post-image { margin-bottom: 8px; object-fit: cover; }
 .main-article-img { margin-bottom: 24px; }
-.article-content img, .article-content video { 
-    margin: 1.5rem 0; 
-    border-radius: 8px; 
+.article-content img, .article-content video {
+    margin: 1.8rem 0;
+    border-radius: 10px;
+    opacity: 0.95;
 }
 
-/* Links & Components */
+/* ── Links ── */
 .article-content a {
     color: inherit;
-    text-decoration: underline;
-    opacity: 0.8;
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--link-underline, var(--text-color-50));
+    padding-bottom: 1px;
+    opacity: 0.85;
+    transition: opacity 0.15s ease, border-color 0.15s ease;
 }
 
-.article-content a:hover { opacity: 1; }
+.article-content a:hover {
+    opacity: 1;
+    border-bottom-color: var(--text-color-100);
+}
 
+/* ── Blockquote ── */
 .article-content blockquote {
-    border-left: 4px solid var(--text-color-65);
-    padding-left: 16px;
-    margin: 16px 0;
+    border-left: 3px solid var(--text-color-50);
+    padding: 4px 0 4px 20px;
+    margin: 1.6rem 0;
     font-style: italic;
+    opacity: 0.75;
+    font-size: 1.05rem;
+    line-height: 1.7;
 }
 
-.article-content ul, .article-content ol { margin: 10px 0; padding-left: 20px; }
-.article-content li { margin: 8px 0; }
+.article-content blockquote p {
+    margin: 0;
+    opacity: 1; /* inherit parent opacity instead of stacking */
+}
 
-/* Code Blocks */
+/* ── Lists ── */
+.article-content ul,
+.article-content ol {
+    margin: 0 0 1.4rem 0;
+    padding-left: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.article-content ul li,
+.article-content ol li {
+    position: relative;
+    padding-left: 1.5rem;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--text-color-100);
+    mix-blend-mode: plus-lighter;
+    opacity: 0.85;
+}
+
+/* Custom bullet — a soft rounded dot */
+.article-content ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--text-color-65);
+}
+
+/* Numbered list counter */
+.article-content ol {
+    counter-reset: article-ol;
+}
+
+.article-content ol li {
+    counter-increment: article-ol;
+}
+
+.article-content ol li::before {
+    content: counter(article-ol);
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-color-65);
+    line-height: 1.75;
+    width: 1.1rem;
+    text-align: right;
+}
+
+/* Nested lists */
+.article-content ul ul,
+.article-content ol ol,
+.article-content ul ol,
+.article-content ol ul {
+    margin: 6px 0 0 0;
+    padding-left: 1rem;
+    gap: 4px;
+}
+
+/* ── Code Blocks ── */
 .article-content pre, .article-content code {
-    font-family: monospace;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
     background: var(--text-color-50);
-    border-radius: 4px;
-    font-size: 0.9rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
 }
 
-.article-content pre { padding: 12px; overflow-x: auto; }
-.article-content code { padding: 2px 6px; border-radius: 3px; }
+.article-content pre {
+    padding: 14px 16px;
+    overflow-x: auto;
+    line-height: 1.6;
+}
 
-/* Meta Footer */
+.article-content code {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.88em;
+}
+
+/* ── Meta Footer ── */
 .article-meta {
-    margin-top: 20px;
+    margin-top: 24px;
     padding-top: 20px;
     border-top: 1px solid var(--text-color-50);
     text-align: center;
@@ -119,7 +234,52 @@ img, video { max-width: 100%; height: auto; }
     height: 32px;
 }
 
+/* ── Global p/li blend (preserving intent, slightly more readable) ── */
 p, li {
     color: var(--text-color-65) !important;
     mix-blend-mode: plus-lighter !important;
+}
+
+.post {
+    max-width: 900px;
+}
+
+/* ── Figure / caption ── */
+.article-content figure {
+    margin: 1.8rem 0;
+}
+
+.article-content figcaption {
+    font-size: 0.78rem;
+    letter-spacing: 0.03em;
+    color: var(--text-color-65);
+    text-align: center;
+    margin-top: 8px;
+    opacity: 0.7;
+    font-style: italic;
+}
+
+/* ── Horizontal rule ── */
+.article-content hr {
+    border: none;
+    height: 1px;
+    background: var(--text-color-50);
+    margin: 2rem 0;
+    opacity: 0.4;
+}
+
+.btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 52px;
+    border-radius: 9999px;
+    overflow: hidden;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.btn span {
+    color: var(--text-color-65);
+    mix-blend-mode: plus-lighter;
 }
