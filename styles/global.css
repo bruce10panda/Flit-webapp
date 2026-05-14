@@ -31,7 +31,7 @@ body {
   color: var(--text-color-100);
   margin: 0;
   padding: 16px;
-  padding-top: 62px;
+  padding-top: env(safe-area-inset-top);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;

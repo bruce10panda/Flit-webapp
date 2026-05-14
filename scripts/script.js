@@ -92,3 +92,4 @@ const processArticleContent = (container) => {
 
 // Expose so article-reader.js can call it after injecting content
 window.processArticleContent = processArticleContent;
+
