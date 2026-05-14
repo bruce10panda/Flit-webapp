@@ -103,6 +103,14 @@ img, video { max-width: 100%; height: auto; }
     opacity: 0.95;
 }
 
+/* Ensure images are fully opaque and without blend mode */
+.article-content img,
+.post-image,
+.main-article-img {
+    opacity: 1 !important;
+    mix-blend-mode: normal !important;
+}
+
 /* ── Links ── */
 .article-content a {
     color: inherit;
@@ -277,6 +285,8 @@ p, li {
     overflow: hidden;
     gap: 6px;
     cursor: pointer;
+    width: 100%;
+    max-width: 900px;
 }
 
 .btn span {

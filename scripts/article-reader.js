@@ -91,7 +91,21 @@ const blockedLinkDomains = [
 ];
 
 function normalizeSrc(src) {
-    return src?.trim().replace(/\/?(?:\?.*)?$/, '').replace(/\/+$/, '');
+    if (!src) return '';
+    try {
+        // 1. Remove query strings (e.g., ?lossy)
+        let url = src.split('?')[0];
+        
+        // 2. Extract the last part of the path (the filename)
+        const parts = url.split('/');
+        const filename = parts[parts.length - 1];
+        
+        // 3. Optional: if the filename is very generic (e.g., "image.jpg"), 
+        // you might want to keep the last two parts of the path.
+        return filename.toLowerCase();
+    } catch (e) {
+        return src.toLowerCase();
+    }
 }
 
 function getTimeAgo(dateStr) {

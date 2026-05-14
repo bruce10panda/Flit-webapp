@@ -126,3 +126,16 @@ p {
     overflow: hidden;
     color: var(--text-color-65);
 }
+
+/* 1. Remove blend mode/opacity from paragraphs that contain images */
+.article-content p:has(img) {
+    opacity: 1 !important;
+    mix-blend-mode: normal !important;
+}
+
+/* 2. Ensure the images themselves are clean */
+.article-content img {
+    opacity: 1 !important;
+    mix-blend-mode: normal !important;
+    display: block; /* Prevents inline spacing issues */
+}

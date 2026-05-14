@@ -57,24 +57,33 @@ const SUMMARY_PATTERNS = [
 const processArticleContent = (container) => {
   if (!container) return;
 
+  // Retrieve author name from session storage
+  const savedData = JSON.parse(sessionStorage.getItem('currentPostData'));
+  const authorName = savedData?.author?.trim();
+
   const paragraphs = container.querySelectorAll('p');
 
   paragraphs.forEach(p => {
     const text = p.textContent.trim();
     const wordCount = text.split(/\s+/).filter(Boolean).length;
 
-    // Hide "summary created by …" labels
+    // 1. Hide paragraphs starting with the author's name
+    if (authorName && text.toLowerCase().startsWith(authorName.toLowerCase())) {
+      p.style.display = 'none';
+      return;
+    }
+
+    // 2. Hide "summary created by …" labels
     if (SUMMARY_PATTERNS.some(re => re.test(text))) {
       p.setAttribute('data-summary-label', '');
       return;
     }
 
-    // Short label detection: 1–4 words, no sentence punctuation
-    // (avoids tagging abbreviations that end mid-sentence)
+    // 3. Short label detection: 1–4 words, no sentence punctuation
     if (
       wordCount >= 1 &&
       wordCount <= 4 &&
-      !/[.!?]$/.test(text)      // doesn't end like a sentence
+      !/[.!?]$/.test(text)
     ) {
       p.setAttribute('data-label', '');
     }
