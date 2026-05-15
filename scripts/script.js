@@ -17,133 +17,128 @@ function getTimeAgo(dateStr) {
     return `${Math.floor(hours / 24)}D`;
 }
 
-// ── Theme application ──────────────────────────────────────────────────────
+// ── Theme ──────────────────────────────────────────────────────────────────
 
 const applyProfileTheme = (theme) => {
-  if (!theme) return;
+    if (!theme) return;
 
-  const h = parseFloat(theme['base-hue']);
-  const s = parseFloat(theme['saturation']);
-  const offset = parseFloat(theme['lightness']); // -1 → 0%, 0 → 50%, 1 → 100%
+    const h = parseFloat(theme['base-hue']);
+    const s = parseFloat(theme['saturation']);
+    const offset = parseFloat(theme['lightness']); // -1 → 0%, 0 → 50%, 1 → 100%
 
-  // Convert offset to a base lightness percentage
-  // offset: -1 = 0%, 0 = 50%, 1 = 100%
-  const basL = 50 + offset * 50;
+    const basL = 50 + offset * 50;
 
-  // Create a visible gradient by shifting lightness between top and bottom.
-  // Spread scales down near the extremes so we don't get colour when fully black/white.
-  const maxSpread = 8;
-  const spread = maxSpread * (1 - Math.abs(offset));
-  const topL    = Math.min(100, basL + spread);
-  const bottomL = Math.max(0,   basL - spread);
+    // Spread scales down near extremes so we don't clip to pure black/white
+    const maxSpread = 8;
+    const spread = maxSpread * (1 - Math.abs(offset));
+    const topL    = Math.min(100, basL + spread);
+    const bottomL = Math.max(0,   basL - spread);
 
-  // Hue rotation between stops for a richer look
-  const hTop    = h;
-  const hBottom = h + 10;
+    root.style.setProperty('--bg-top',    `hsl(${h}, ${s}%, ${topL}%)`);
+    root.style.setProperty('--bg-bottom', `hsl(${h + 10}, ${s}%, ${bottomL}%)`);
 
-  root.style.setProperty('--bg-top',    `hsl(${hTop}, ${s}%, ${topL}%)`);
-  root.style.setProperty('--bg-bottom', `hsl(${hBottom}, ${s}%, ${bottomL}%)`);
-
-  updateTextColor(offset, h, s);
+    updateTextColor(offset, h, s);
 };
 
 const updateTextColor = (offset, baseH, sat) => {
-  if (offset > 0) {
-    // Light bg — use dark hue-tinted text
-    const textL = Math.round(10 + offset * 15); // 10–25%
-    root.style.setProperty('--text-color-100', `hsl(${baseH}, ${sat}%, ${textL}%)`);
-    root.style.setProperty('--text-color-65',  `hsla(${baseH}, ${sat}%, ${textL}%, 0.75)`);
-    root.style.setProperty('--text-color-50',  `hsla(${baseH}, ${sat}%, ${textL}%, 0.45)`);
-    root.style.setProperty('--link-underline',  `hsla(${baseH}, ${sat}%, ${textL}%, 0.4)`);
-  } else {
-    // Dark bg — white text
-    const alpha65 = offset < -0.5 ? 0.7 : 0.6;
-    const alpha50 = offset < -0.5 ? 0.45 : 0.35;
-    root.style.setProperty('--text-color-100', 'hsl(0, 0%, 100%)');
-    root.style.setProperty('--text-color-65',  `hsla(0, 0%, 100%, ${alpha65})`);
-    root.style.setProperty('--text-color-50',  `hsla(0, 0%, 100%, ${alpha50})`);
-    root.style.setProperty('--link-underline',  'hsla(0, 0%, 100%, 0.3)');
-  }
+    if (offset > 0) {
+        // Light background — use dark hue-tinted text
+        const textL = Math.round(10 + offset * 15);
+        root.style.setProperty('--text-color-100', `hsl(${baseH}, ${sat}%, ${textL}%)`);
+        root.style.setProperty('--text-color-80',  `hsla(${baseH}, ${sat}%, ${textL}%, 0.8)`);
+        root.style.setProperty('--text-color-65',  `hsla(${baseH}, ${sat}%, ${textL}%, 0.75)`);
+        root.style.setProperty('--text-color-50',  `hsla(${baseH}, ${sat}%, ${textL}%, 0.45)`);
+        root.style.setProperty('--link-underline',  `hsla(${baseH}, ${sat}%, ${textL}%, 0.4)`);
+        root.style.setProperty('--blend-mode', 'normal');
+    } else {
+        // Dark background — white text with alpha tuned per darkness level
+        const alpha65 = offset < -0.5 ? 0.7 : 0.6;
+        const alpha50 = offset < -0.5 ? 0.45 : 0.35;
+        root.style.setProperty('--text-color-100', 'hsl(0, 0%, 100%)');
+        root.style.setProperty('--text-color-80',  'hsla(0, 0%, 100%, 0.8)');
+        root.style.setProperty('--text-color-65',  `hsla(0, 0%, 100%, ${alpha65})`);
+        root.style.setProperty('--text-color-50',  `hsla(0, 0%, 100%, ${alpha50})`);
+        root.style.setProperty('--link-underline',  'hsla(0, 0%, 100%, 0.3)');
+        root.style.setProperty('--blend-mode', 'plus-lighter');
+    }
 };
 
-// ── Theme loading ──────────────────────────────────────────────────────────
-
-// Fetches profile.json, applies the theme of the first space, and returns
-// the full profile so callers can read other fields (feeds, preferences, etc.)
+// Fetches profile.json, applies the first space's theme, and returns the
+// full profile so callers can read feeds, preferences, etc.
 async function loadAndApplyTheme() {
-  try {
-    const res = await fetch('profile.json');
-    if (!res.ok) throw new Error('profile.json not found');
-    const profile = await res.json();
-    const activeSpace = profile.spaces?.[0];
-    if (activeSpace?.theme) applyProfileTheme(activeSpace.theme);
-    return profile;
-  } catch (e) {
-    console.error('Theme: could not load profile.json', e);
-    return null;
-  }
+    try {
+        const res = await fetch('profile.json');
+        if (!res.ok) throw new Error('profile.json not found');
+        const profile = await res.json();
+        const activeIndex = parseInt(localStorage.getItem('activeSpaceIndex') || '0', 10);
+        const activeSpace = profile.spaces?.[activeIndex] || profile.spaces?.[0];
+        if (activeSpace?.theme) applyProfileTheme(activeSpace.theme);
+        return profile;
+    } catch (e) {
+        console.error('Theme: could not load profile.json', e);
+        return null;
+    }
 }
-// Called after article HTML is injected into .article-content
+
+// ── Article content post-processing ───────────────────────────────────────
 
 const SUMMARY_PATTERNS = [
-  /^summary (created|generated|written|provided) by/i,
-  /^ai[- ]generated/i,
-  /^generated by/i,
-  /^powered by/i,
-  /^this summary/i,
-  /^auto[- ]summarized/i,
+    /^summary (created|generated|written|provided) by/i,
+    /^ai[- ]generated/i,
+    /^generated by/i,
+    /^powered by/i,
+    /^this summary/i,
+    /^auto[- ]summarized/i,
 ];
 
 const processArticleContent = (container) => {
-  if (!container) return;
+    if (!container) return;
 
-  // Retrieve author name from session storage
-  const savedData = JSON.parse(sessionStorage.getItem('currentPostData'));
-  const authorName = savedData?.author?.trim();
+    const savedData = JSON.parse(sessionStorage.getItem('currentPostData'));
+    const authorName = savedData?.author?.trim();
 
-  const paragraphs = container.querySelectorAll('p');
+    container.querySelectorAll('p').forEach(p => {
+        const text = p.textContent.trim();
+        const wordCount = text.split(/\s+/).filter(Boolean).length;
 
-  paragraphs.forEach(p => {
-    const text = p.textContent.trim();
-    const wordCount = text.split(/\s+/).filter(Boolean).length;
+        if (authorName && text.toLowerCase().startsWith(authorName.toLowerCase())) {
+            p.style.display = 'none';
+            return;
+        }
 
-    // 1. Hide paragraphs starting with the author's name
-    if (authorName && text.toLowerCase().startsWith(authorName.toLowerCase())) {
-      p.style.display = 'none';
-      return;
-    }
+        if (SUMMARY_PATTERNS.some(re => re.test(text))) {
+            p.setAttribute('data-summary-label', '');
+            return;
+        }
 
-    // 2. Hide "summary created by …" labels
-    if (SUMMARY_PATTERNS.some(re => re.test(text))) {
-      p.setAttribute('data-summary-label', '');
-      return;
-    }
-
-    // 3. Short label detection: 1–4 words, no sentence punctuation
-    if (
-      wordCount >= 1 &&
-      wordCount <= 4 &&
-      !/[.!?]$/.test(text)
-    ) {
-      p.setAttribute('data-label', '');
-    }
-  });
+        // 1–4 word paragraphs with no sentence-ending punctuation are treated as labels/captions
+        if (wordCount >= 1 && wordCount <= 4 && !/[.!?]$/.test(text)) {
+            p.setAttribute('data-label', '');
+        }
+    });
 };
 
-// Expose so article-reader.js can call it after injecting content
+// Exposed so article-reader.js can call it after injecting content
 window.processArticleContent = processArticleContent;
+
+// ── Sidebar button ────────────────────────────────────────────────────────
+
+const sidebarBtn = document.querySelector('#sidebar-btn');
+if (sidebarBtn) sidebarBtn.addEventListener('click', () => window.location.href = 'sidebar.html');
+
+// ── Reload button ──────────────────────────────────────────────────────────
 
 const refreshButton = document.querySelector('.reload');
 
 if (refreshButton) {
-  refreshButton.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    refreshButton.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    const checkScroll = setInterval(() => {
-      if (window.scrollY === 0) {
-        clearInterval(checkScroll);
-        location.reload();
-      }
-    }, 100);
-  });
+        const checkScroll = setInterval(() => {
+            if (window.scrollY === 0) {
+                clearInterval(checkScroll);
+                location.reload();
+            }
+        }, 100);
+    });
 }

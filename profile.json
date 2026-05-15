@@ -1,19 +1,34 @@
 {
     "spaces": [
         {
-            "name": "Tech News",
+            "name": "Apple News",
+            "emoji": "🍎",
             "theme": {
-                "base-hue": 210,
-                "hue-offset": 20,
-                "saturation": 30,
+                "base-hue": 0,
+                "hue-offset": 0,
+                "saturation": 0,
                 "lightness": -0.9
             },
             "feeds": [
                 "https://9to5mac.com/feed/",
                 "https://www.macrumors.com/macrumors.xml",
                 "https://www.macworld.com/index.rss",
-                "https://sixcolors.com/feed/",
-                "https://theverge.com/rss/index.xml"
+                "https://sixcolors.com/feed/"
+            ]
+        },
+        {
+            "name": "Gaming News",
+            "emoji": "🎮",
+            "theme": {
+                "base-hue": 180,
+                "hue-offset": 20,
+                "saturation": 670,
+                "lightness": -0.90
+            },
+            "feeds": [
+                "http://www.polygon.com/rss/index.xml",
+                "https://www.gamespot.com/feeds/mashup",
+                "https://www.theverge.com/rss/games/index.xml"
             ]
         }
     ],

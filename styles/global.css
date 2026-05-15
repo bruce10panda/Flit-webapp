@@ -1,12 +1,15 @@
 :root {
-  /* Theme variables - set by applyProfileTheme() in script.js */
-  --bg-top: transparent;
-  --bg-bottom: transparent;
-  --text-color-100: white;
-  --text-color-65: rgba(255, 255, 255, 0.65);
-  --text-color-50: rgba(255, 255, 255, 0.5);
+    /* Set dynamically by applyProfileTheme() in script.js */
+    --bg-top: transparent;
+    --bg-bottom: transparent;
+    --text-color-100: white;
+    --text-color-80: rgba(255, 255, 255, 0.8);
+    --text-color-65: rgba(255, 255, 255, 0.65);
+    --text-color-50: rgba(255, 255, 255, 0.5);
+    --text-color-5: rgba(255, 255, 255, 0.05);
+    --blend-mode: plus-lighter;
 
-  -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html {
@@ -14,20 +17,20 @@ html {
 }
 
 body {
-  background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
-  color: var(--text-color-100);
-  margin: 0;
-  padding: 16px;
-  padding-top: max(16px, env(safe-area-inset-top));
-  padding-bottom: max(16px, env(safe-area-inset-bottom));
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: 'DM Sans', system-ui, sans-serif;
-  min-height: 100svh;
-  gap: 32px;
-  touch-action: manipulation;
+    background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
+    color: var(--text-color-100);
+    margin: 0;
+    padding: 16px;
+    padding-top: max(16px, env(safe-area-inset-top));
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    min-height: 100svh;
+    gap: 32px;
+    touch-action: manipulation;
 }
 
 .material-symbols-rounded {
@@ -35,19 +38,19 @@ body {
 }
 
 .overlay {
-  position: relative;
+    position: relative;
 }
 
 .overlay::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--text-color-100);
-  mix-blend-mode: overlay;
-  z-index: -1;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--text-color-100);
+    mix-blend-mode: overlay;
+    z-index: -1;
 }
 
 .top {
@@ -94,7 +97,7 @@ h2 {
 p {
     margin: 0;
     color: var(--text-color-50);
-    mix-blend-mode: plus-lighter;
+    mix-blend-mode: var(--blend-mode);
     font-size: 14px;
 }
 
@@ -113,4 +116,13 @@ p {
     border-radius: 70px;
     overflow: hidden;
     color: var(--text-color-65);
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background: var(--text-color-100);
+    opacity: 0.1;
+    width: 100%;
+    margin: 0;
 }

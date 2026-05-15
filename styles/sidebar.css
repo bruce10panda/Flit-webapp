@@ -1,0 +1,31 @@
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 16px;
+}
+
+.list-option {
+    display: flex;
+    gap: 16px;
+}
+
+.list-option p:first-child {
+    font-size: 16px;
+    color: var(--text-color-100);
+    mix-blend-mode: normal;
+}
+
+.list-option p:last-child {
+    font-size: 16px;
+    color: var(--text-color-80);
+    font-weight: 400;
+    mix-blend-mode: var(--blend-mode);
+}

@@ -1,4 +1,5 @@
-/* Layout & Containers */
+/* ── Layout ── */
+
 .post, .article-content {
     display: flex;
     flex-direction: column;
@@ -7,7 +8,7 @@
 }
 
 .post { gap: 20px; max-width: 900px; }
-.article-content { gap: 0; line-height: 1.8; color: var(--text-color-100); }
+.article-content { gap: 0; line-height: 1.8; }
 
 .post .title {
     margin: 0;
@@ -38,7 +39,8 @@
     gap: 8px;
 }
 
-/* ── Typography & Headers ── */
+/* ── Typography ── */
+
 .article-content h1, .article-content h2, .article-content h3,
 .article-content h4, .article-content h5, .article-content h6 {
     margin: 1.2rem 0 0.5rem 0;
@@ -53,34 +55,31 @@
 .article-content h3 { font-size: 1.15rem; }
 .article-content h4, .article-content h5, .article-content h6 { font-size: 1rem; }
 
-.article-content p {
-    margin: 0 0 1rem 0;
-    font-size: 1.05rem;
-    color: var(--text-color-100);
+/* Overrides global p color and mix-blend-mode with article-specific values */
+.article-content p,
+.article-content li {
+    color: var(--text-color-100) !important;
+    mix-blend-mode: normal !important;
     opacity: 0.75;
 }
 
+.article-content p { margin: 0 0 1rem 0; font-size: 1.05rem; }
 .article-content p:last-child { margin-bottom: 0; }
 
-/* ── Short/source label paragraphs (1–4 words) ──
-   Targets <p> whose trimmed text is very short — treated as captions/labels */
-.article-content p:where([data-label]) {
-    display: none;
-}
-
-/* ── "Summary created by" / AI-label hider ── */
+/* 1–4 word paragraphs without sentence punctuation are treated as captions/labels */
+.article-content p[data-label],
 .article-content p[data-summary-label] {
     display: none;
 }
 
-/* Source / author */
 .source-author .author, .time, .article-meta p {
     color: var(--text-color-65);
     mix-blend-mode: normal;
     opacity: 1;
 }
 
-/* ── Media Elements ── */
+/* ── Media ── */
+
 img, video { max-width: 100%; height: auto; }
 
 .source img { border-radius: 50%; width: 32px; height: 32px; }
@@ -89,31 +88,23 @@ img, video { max-width: 100%; height: auto; }
     width: 100%;
     border-radius: 12px;
     display: block;
-}
-
-.post-image { margin-bottom: 8px; object-fit: cover; }
-.main-article-img { margin-bottom: 24px; }
-.article-content img, .article-content video {
-    margin: 1.2rem 0;
-    border-radius: 10px;
-    opacity: 0.95;
-}
-
-/* Ensure images are fully opaque and without blend mode */
-.article-content img,
-.post-image,
-.main-article-img {
+    /* Reset blend mode that leaks in from global p/li rules */
     opacity: 1 !important;
     mix-blend-mode: normal !important;
 }
 
-/* Also reset any paragraph wrapping an image — blend mode bleeds from parent */
+.post-image { margin-bottom: 8px; object-fit: cover; }
+.main-article-img { margin-bottom: 24px; }
+.article-content img, .article-content video { margin: 1.2rem 0; border-radius: 10px; }
+
+/* Blend mode from the parent p can bleed onto images */
 .article-content p:has(img) {
     opacity: 1 !important;
     mix-blend-mode: normal !important;
 }
 
 /* ── Links ── */
+
 .article-content a {
     color: inherit;
     text-decoration: none;
@@ -129,6 +120,7 @@ img, video { max-width: 100%; height: auto; }
 }
 
 /* ── Blockquote ── */
+
 .article-content blockquote {
     border-left: 3px solid var(--text-color-50);
     padding: 4px 0 4px 20px;
@@ -141,10 +133,11 @@ img, video { max-width: 100%; height: auto; }
 
 .article-content blockquote p {
     margin: 0;
-    opacity: 1; /* inherit parent opacity instead of stacking */
+    opacity: 1; /* don't stack with parent's 0.75 */
 }
 
 /* ── Lists ── */
+
 .article-content ul,
 .article-content ol {
     margin: 0 0 1rem 0;
@@ -164,7 +157,6 @@ img, video { max-width: 100%; height: auto; }
     opacity: 0.9;
 }
 
-/* Custom bullet — a soft rounded dot */
 .article-content ul li::before {
     content: '';
     position: absolute;
@@ -176,14 +168,8 @@ img, video { max-width: 100%; height: auto; }
     background: var(--text-color-65);
 }
 
-/* Numbered list counter */
-.article-content ol {
-    counter-reset: article-ol;
-}
-
-.article-content ol li {
-    counter-increment: article-ol;
-}
+.article-content ol { counter-reset: article-ol; }
+.article-content ol li { counter-increment: article-ol; }
 
 .article-content ol li::before {
     content: counter(article-ol);
@@ -199,7 +185,6 @@ img, video { max-width: 100%; height: auto; }
     text-align: right;
 }
 
-/* Nested lists */
 .article-content ul ul,
 .article-content ol ol,
 .article-content ul ol,
@@ -209,7 +194,8 @@ img, video { max-width: 100%; height: auto; }
     gap: 4px;
 }
 
-/* ── Code Blocks ── */
+/* ── Code ── */
+
 .article-content pre, .article-content code {
     font-family: 'JetBrains Mono', 'Fira Code', monospace;
     background: var(--text-color-50);
@@ -229,26 +215,9 @@ img, video { max-width: 100%; height: auto; }
     font-size: 0.88em;
 }
 
-/* ── Meta Footer ── */
-.article-meta {
-    margin-top: 24px;
-    padding-top: 20px;
-    border-top: 1px solid var(--text-color-50);
-    text-align: center;
-}
+/* ── Figure ── */
 
-/* ── Article-scoped text colors ── */
-.article-content p,
-.article-content li {
-    color: var(--text-color-100) !important;
-    mix-blend-mode: normal !important;
-    opacity: 0.75;
-}
-
-/* ── Figure / caption ── */
-.article-content figure {
-    margin: 1.8rem 0;
-}
+.article-content figure { margin: 1.8rem 0; }
 
 .article-content figcaption {
     font-size: 0.78rem;
@@ -260,13 +229,21 @@ img, video { max-width: 100%; height: auto; }
     font-style: italic;
 }
 
-/* ── Horizontal rule ── */
+/* ── Misc ── */
+
 .article-content hr {
     border: none;
     height: 1px;
     background: var(--text-color-50);
     margin: 2rem 0;
     opacity: 0.4;
+}
+
+.article-meta {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--text-color-50);
+    text-align: center;
 }
 
 .btn {
@@ -284,5 +261,5 @@ img, video { max-width: 100%; height: auto; }
 
 .btn span {
     color: var(--text-color-65);
-    mix-blend-mode: plus-lighter;
+    mix-blend-mode: var(--blend-mode);
 }
