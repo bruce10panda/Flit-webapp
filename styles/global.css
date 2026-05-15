@@ -17,7 +17,9 @@ html {
 }
 
 body {
-    background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
+    background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom), var(--bg-top));
+    background-size: 100% 800vh;
+    background-repeat: repeat-y;
     color: var(--text-color-100);
     margin: 0;
     padding: 16px;

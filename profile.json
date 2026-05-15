@@ -1,13 +1,24 @@
 {
     "spaces": [
         {
+            "name": "Tech News",
+            "emoji": "💻",
+            "theme": {
+                "top": "hsl(220, 60%, 90%)",
+                "bottom": "hsl(220, 60%, 95%)"
+            },
+            "feeds": [
+                "https://arstechnica.com/feed/",
+                "https://www.theverge.com/rss/index.xml",
+                "https://www.wired.com/feed/rss"
+            ]
+        },
+        {
             "name": "Apple News",
             "emoji": "🍎",
             "theme": {
-                "base-hue": 0,
-                "hue-offset": 0,
-                "saturation": 0,
-                "lightness": -0.9
+                "top": "hsl(0, 75%, 90%)",
+                "bottom": "hsl(20, 75%, 90%)"
             },
             "feeds": [
                 "https://9to5mac.com/feed/",
@@ -17,18 +28,16 @@
             ]
         },
         {
-            "name": "Gaming News",
-            "emoji": "🎮",
+            "name": "World News",
+            "emoji": "🌐",
             "theme": {
-                "base-hue": 180,
-                "hue-offset": 20,
-                "saturation": 670,
-                "lightness": -0.90
+                "top": "hsl(140, 40%, 8%)",
+                "bottom": "hsl(140, 40%, 4%)"
             },
             "feeds": [
-                "http://www.polygon.com/rss/index.xml",
-                "https://www.gamespot.com/feeds/mashup",
-                "https://www.theverge.com/rss/games/index.xml"
+                "https://feeds.bbci.co.uk/news/world/rss.xml",
+                "https://www.theguardian.com/world/rss",
+                "https://www.vox.com/rss/world-politics/index.xml"
             ]
         }
     ],

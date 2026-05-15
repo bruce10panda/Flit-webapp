@@ -25,42 +25,25 @@ function getTimeAgo(dateStr) {
 const applyProfileTheme = (theme) => {
     if (!theme) return;
 
-    const h = parseFloat(theme['base-hue']);
-    const s = parseFloat(theme['saturation']);
-    const offset = parseFloat(theme['lightness']); // -1 → 0%, 0 → 50%, 1 → 100%
+    root.style.setProperty('--bg-top',    theme.top);
+    root.style.setProperty('--bg-bottom', theme.bottom);
 
-    const basL = 50 + offset * 50;
+    // Parse lightness from the top color to pick text color scheme
+    const lMatch = theme.top.match(/(\d+(?:\.\d+)?)%\s*\)/);
+    const lightness = lMatch ? parseFloat(lMatch[1]) : 20;
 
-    // Spread scales down near extremes so we don't clip to pure black/white
-    const maxSpread = 8;
-    const spread = maxSpread * (1 - Math.abs(offset));
-    const topL    = Math.min(100, basL + spread);
-    const bottomL = Math.max(0,   basL - spread);
-
-    root.style.setProperty('--bg-top',    `hsl(${h}, ${s}%, ${topL}%)`);
-    root.style.setProperty('--bg-bottom', `hsl(${h + 10}, ${s}%, ${bottomL}%)`);
-
-    updateTextColor(offset, h, s);
-};
-
-const updateTextColor = (offset, baseH, sat) => {
-    if (offset > 0) {
-        // Light background — use dark hue-tinted text
-        const textL = Math.round(10 + offset * 15);
-        root.style.setProperty('--text-color-100', `hsl(${baseH}, ${sat}%, ${textL}%)`);
-        root.style.setProperty('--text-color-80',  `hsla(${baseH}, ${sat}%, ${textL}%, 0.8)`);
-        root.style.setProperty('--text-color-65',  `hsla(${baseH}, ${sat}%, ${textL}%, 0.75)`);
-        root.style.setProperty('--text-color-50',  `hsla(${baseH}, ${sat}%, ${textL}%, 0.45)`);
-        root.style.setProperty('--link-underline',  `hsla(${baseH}, ${sat}%, ${textL}%, 0.4)`);
+    if (lightness > 50) {
+        root.style.setProperty('--text-color-100', 'hsl(0, 0%, 10%)');
+        root.style.setProperty('--text-color-80',  'hsla(0, 0%, 10%, 0.8)');
+        root.style.setProperty('--text-color-65',  'hsla(0, 0%, 10%, 0.65)');
+        root.style.setProperty('--text-color-50',  'hsla(0, 0%, 10%, 0.45)');
+        root.style.setProperty('--link-underline',  'hsla(0, 0%, 10%, 0.4)');
         root.style.setProperty('--blend-mode', 'normal');
     } else {
-        // Dark background — white text with alpha tuned per darkness level
-        const alpha65 = offset < -0.5 ? 0.7 : 0.6;
-        const alpha50 = offset < -0.5 ? 0.45 : 0.35;
         root.style.setProperty('--text-color-100', 'hsl(0, 0%, 100%)');
         root.style.setProperty('--text-color-80',  'hsla(0, 0%, 100%, 0.8)');
-        root.style.setProperty('--text-color-65',  `hsla(0, 0%, 100%, ${alpha65})`);
-        root.style.setProperty('--text-color-50',  `hsla(0, 0%, 100%, ${alpha50})`);
+        root.style.setProperty('--text-color-65',  'hsla(0, 0%, 100%, 0.65)');
+        root.style.setProperty('--text-color-50',  'hsla(0, 0%, 100%, 0.4)');
         root.style.setProperty('--link-underline',  'hsla(0, 0%, 100%, 0.3)');
         root.style.setProperty('--blend-mode', 'plus-lighter');
     }
