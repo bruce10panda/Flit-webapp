@@ -2,12 +2,6 @@
  * article-reader.js - Enhanced Experimental Mode
  */
 
-const proxySources = [
-    'https://api.allorigins.win/raw?url=',
-    'https://corsproxy.io/?',
-    'https://api.codetabs.com/v1/proxy?quest=',
-];
-
 // Expanded blacklist for UI elements, badges, social prompts, and author imagery
 const imageBlacklist = [
     'google-preferred-source',
@@ -106,15 +100,6 @@ function normalizeSrc(src) {
     } catch (e) {
         return src.toLowerCase();
     }
-}
-
-function getTimeAgo(dateStr) {
-    const date = new Date(dateStr);
-    const seconds = Math.floor((new Date() - date) / 1000);
-    const hours = Math.floor(seconds / 3600);
-    if (hours < 1) return 'Just now';
-    if (hours < 24) return `${hours}H`;
-    return `${Math.floor(hours / 24)}D`;
 }
 
 async function fetchArticleHTML(url) {
@@ -231,11 +216,9 @@ function stripBoilerplate(container) {
 async function loadArticle() {
     let experimentalReaderEnabled = false;
 
-    console.log("Reader: Checking profile...");
     try {
-        const profileRes = await fetch('profile.json');
-        const profile = await profileRes.json();
-        experimentalReaderEnabled = profile.preferences?.experimental_reader || false;
+        const profile = await loadAndApplyTheme();
+        experimentalReaderEnabled = profile?.preferences?.experimental_reader || false;
         console.log("Reader: Experimental Mode is", experimentalReaderEnabled ? "ON" : "OFF");
     } catch (e) {
         console.error("Reader: Profile fetch failed", e);

@@ -6,7 +6,7 @@
     color: var(--text-color-100);
 }
 
-.post { gap: 20px; }
+.post { gap: 20px; max-width: 900px; }
 .article-content { gap: 0; line-height: 1.8; color: var(--text-color-100); }
 
 .post .title {
@@ -41,7 +41,7 @@
 /* ── Typography & Headers ── */
 .article-content h1, .article-content h2, .article-content h3,
 .article-content h4, .article-content h5, .article-content h6 {
-    margin: 2rem 0 0.6rem 0;
+    margin: 1.2rem 0 0.5rem 0;
     color: var(--text-color-100);
     font-family: 'Bricolage Grotesque', sans-serif;
     line-height: 1.2;
@@ -54,11 +54,10 @@
 .article-content h4, .article-content h5, .article-content h6 { font-size: 1rem; }
 
 .article-content p {
-    margin: 0 0 1.4rem 0;
+    margin: 0 0 1rem 0;
     font-size: 1.05rem;
     color: var(--text-color-100);
-    mix-blend-mode: plus-lighter;
-    opacity: 0.88;
+    opacity: 0.75;
 }
 
 .article-content p:last-child { margin-bottom: 0; }
@@ -66,12 +65,7 @@
 /* ── Short/source label paragraphs (1–4 words) ──
    Targets <p> whose trimmed text is very short — treated as captions/labels */
 .article-content p:where([data-label]) {
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    opacity: 0.45;
-    margin: -0.6rem 0 1rem 0;
+    display: none;
 }
 
 /* ── "Summary created by" / AI-label hider ── */
@@ -82,12 +76,14 @@
 /* Source / author */
 .source-author .author, .time, .article-meta p {
     color: var(--text-color-65);
+    mix-blend-mode: normal;
+    opacity: 1;
 }
 
 /* ── Media Elements ── */
 img, video { max-width: 100%; height: auto; }
 
-.source img { border-radius: 50%; height: 100%; width: auto; }
+.source img { border-radius: 50%; width: 32px; height: 32px; }
 
 .post-image, .main-article-img, .article-content img, .article-content video {
     width: 100%;
@@ -98,7 +94,7 @@ img, video { max-width: 100%; height: auto; }
 .post-image { margin-bottom: 8px; object-fit: cover; }
 .main-article-img { margin-bottom: 24px; }
 .article-content img, .article-content video {
-    margin: 1.8rem 0;
+    margin: 1.2rem 0;
     border-radius: 10px;
     opacity: 0.95;
 }
@@ -107,6 +103,12 @@ img, video { max-width: 100%; height: auto; }
 .article-content img,
 .post-image,
 .main-article-img {
+    opacity: 1 !important;
+    mix-blend-mode: normal !important;
+}
+
+/* Also reset any paragraph wrapping an image — blend mode bleeds from parent */
+.article-content p:has(img) {
     opacity: 1 !important;
     mix-blend-mode: normal !important;
 }
@@ -145,8 +147,7 @@ img, video { max-width: 100%; height: auto; }
 /* ── Lists ── */
 .article-content ul,
 .article-content ol {
-    margin: 0 0 1.4rem 0;
-    padding-left: 0;
+    margin: 0 0 1rem 0;
     list-style: none;
     display: flex;
     flex-direction: column;
@@ -160,8 +161,7 @@ img, video { max-width: 100%; height: auto; }
     font-size: 1.05rem;
     line-height: 1.7;
     color: var(--text-color-100);
-    mix-blend-mode: plus-lighter;
-    opacity: 0.85;
+    opacity: 0.9;
 }
 
 /* Custom bullet — a soft rounded dot */
@@ -237,19 +237,12 @@ img, video { max-width: 100%; height: auto; }
     text-align: center;
 }
 
-.source img {
-    width: 32px;
-    height: 32px;
-}
-
-/* ── Global p/li blend (preserving intent, slightly more readable) ── */
-p, li {
-    color: var(--text-color-65) !important;
-    mix-blend-mode: plus-lighter !important;
-}
-
-.post {
-    max-width: 900px;
+/* ── Article-scoped text colors ── */
+.article-content p,
+.article-content li {
+    color: var(--text-color-100) !important;
+    mix-blend-mode: normal !important;
+    opacity: 0.75;
 }
 
 /* ── Figure / caption ── */

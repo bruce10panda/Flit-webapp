@@ -1,48 +1,88 @@
 const root = document.documentElement;
 
+// ── Shared utilities ───────────────────────────────────────────────────────
+
+const proxySources = [
+    'https://api.allorigins.win/raw?url=',
+    'https://corsproxy.io/?',
+    'https://api.codetabs.com/v1/proxy?quest=',
+];
+
+function getTimeAgo(dateStr) {
+    const date = new Date(dateStr);
+    const seconds = Math.floor((new Date() - date) / 1000);
+    const hours = Math.floor(seconds / 3600);
+    if (hours < 1) return 'Just now';
+    if (hours < 24) return `${hours}H`;
+    return `${Math.floor(hours / 24)}D`;
+}
+
 // ── Theme application ──────────────────────────────────────────────────────
 
 const applyProfileTheme = (theme) => {
   if (!theme) return;
 
-  root.style.setProperty('--base-h', theme['base-hue']);
-  root.style.setProperty('--saturation', theme['saturation'] + '%');
-  root.style.setProperty('--lightness-offset', theme['lightness']);
+  const h = parseFloat(theme['base-hue']);
+  const s = parseFloat(theme['saturation']);
+  const offset = parseFloat(theme['lightness']); // -1 → 0%, 0 → 50%, 1 → 100%
 
-  updateTextColor();
+  // Convert offset to a base lightness percentage
+  // offset: -1 = 0%, 0 = 50%, 1 = 100%
+  const basL = 50 + offset * 50;
+
+  // Create a visible gradient by shifting lightness between top and bottom.
+  // Spread scales down near the extremes so we don't get colour when fully black/white.
+  const maxSpread = 8;
+  const spread = maxSpread * (1 - Math.abs(offset));
+  const topL    = Math.min(100, basL + spread);
+  const bottomL = Math.max(0,   basL - spread);
+
+  // Hue rotation between stops for a richer look
+  const hTop    = h;
+  const hBottom = h + 10;
+
+  root.style.setProperty('--bg-top',    `hsl(${hTop}, ${s}%, ${topL}%)`);
+  root.style.setProperty('--bg-bottom', `hsl(${hBottom}, ${s}%, ${bottomL}%)`);
+
+  updateTextColor(offset, h, s);
 };
 
-const updateTextColor = () => {
-  const style = getComputedStyle(root);
-  const offset = parseFloat(style.getPropertyValue('--lightness-offset'));
-  const baseH = style.getPropertyValue('--base-h').trim();
-  const sat = style.getPropertyValue('--saturation').trim();
-
-  // Derive perceived lightness more accurately:
-  // offset > 0  → light background → dark text
-  // offset <= 0 → dark background  → light text
-  // We also interpolate text contrast so near-zero offsets don't look washed out.
-
+const updateTextColor = (offset, baseH, sat) => {
   if (offset > 0) {
-    // Light bg — use dark text derived from the hue for cohesion
-    const textL = Math.round(10 + offset * 15); // 10–25% lightness
-    root.style.setProperty('--text-color-100', `hsl(${baseH}, ${sat}, ${textL}%)`);
-    root.style.setProperty('--text-color-65',  `hsla(${baseH}, ${sat}, ${textL}%, 0.6)`);
-    root.style.setProperty('--text-color-50',  `hsla(${baseH}, ${sat}, ${textL}%, 0.25)`);
-    root.style.setProperty('--link-underline',  `hsla(${baseH}, ${sat}, ${textL}%, 0.35)`);
+    // Light bg — use dark hue-tinted text
+    const textL = Math.round(10 + offset * 15); // 10–25%
+    root.style.setProperty('--text-color-100', `hsl(${baseH}, ${sat}%, ${textL}%)`);
+    root.style.setProperty('--text-color-65',  `hsla(${baseH}, ${sat}%, ${textL}%, 0.75)`);
+    root.style.setProperty('--text-color-50',  `hsla(${baseH}, ${sat}%, ${textL}%, 0.45)`);
+    root.style.setProperty('--link-underline',  `hsla(${baseH}, ${sat}%, ${textL}%, 0.4)`);
   } else {
-    // Dark bg — white text, adjusted opacity based on how dark it is
-    // Very dark (offset near -1) needs full white; near 0 can be slightly softer
+    // Dark bg — white text
     const alpha65 = offset < -0.5 ? 0.7 : 0.6;
     const alpha50 = offset < -0.5 ? 0.45 : 0.35;
     root.style.setProperty('--text-color-100', 'hsl(0, 0%, 100%)');
     root.style.setProperty('--text-color-65',  `hsla(0, 0%, 100%, ${alpha65})`);
     root.style.setProperty('--text-color-50',  `hsla(0, 0%, 100%, ${alpha50})`);
-    root.style.setProperty('--link-underline',  `hsla(0, 0%, 100%, 0.3)`);
+    root.style.setProperty('--link-underline',  'hsla(0, 0%, 100%, 0.3)');
   }
 };
 
-// ── Article content post-processing ───────────────────────────────────────
+// ── Theme loading ──────────────────────────────────────────────────────────
+
+// Fetches profile.json, applies the theme of the first space, and returns
+// the full profile so callers can read other fields (feeds, preferences, etc.)
+async function loadAndApplyTheme() {
+  try {
+    const res = await fetch('profile.json');
+    if (!res.ok) throw new Error('profile.json not found');
+    const profile = await res.json();
+    const activeSpace = profile.spaces?.[0];
+    if (activeSpace?.theme) applyProfileTheme(activeSpace.theme);
+    return profile;
+  } catch (e) {
+    console.error('Theme: could not load profile.json', e);
+    return null;
+  }
+}
 // Called after article HTML is injected into .article-content
 
 const SUMMARY_PATTERNS = [
@@ -93,3 +133,17 @@ const processArticleContent = (container) => {
 // Expose so article-reader.js can call it after injecting content
 window.processArticleContent = processArticleContent;
 
+const refreshButton = document.querySelector('.reload');
+
+if (refreshButton) {
+  refreshButton.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    const checkScroll = setInterval(() => {
+      if (window.scrollY === 0) {
+        clearInterval(checkScroll);
+        location.reload();
+      }
+    }, 100);
+  });
+}

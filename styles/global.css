@@ -1,23 +1,10 @@
 :root {
-  /* 1. Inputs */
-  --base-h: 240;
-  --saturation: 50%;      /* "Greyness": 0% is grey, 100% is vivid */
-  --lightness-offset: -0.8; /* -1 (Black box) to 1 (White box) */
-
-  /* 2. Overlay Math */
-  /* This scales the base 50% lightness based on the offset */
-  --multiplier: calc(1 - abs(var(--lightness-offset)));
-  --added-light: calc(max(0, var(--lightness-offset)) * 100%);
-  --final-l: calc((50% * var(--multiplier)) + var(--added-light));
-
-  /* 3. Background Gradient */
-  --bg-top: hsl(var(--base-h), var(--saturation), var(--final-l));
-  --bg-bottom: hsl(calc(var(--base-h) + 4), var(--saturation), var(--final-l));
-  
-  /* 4. Text Colors (updated by script) */
-  --text-color-100: hsl(0, 0%, 100%);
-  --text-color-65: hsla(0, 0%, 100%, 0.65);
-  --text-color-50: hsla(0, 0%, 100%, 0.5);
+  /* Theme variables - set by applyProfileTheme() in script.js */
+  --bg-top: transparent;
+  --bg-bottom: transparent;
+  --text-color-100: white;
+  --text-color-65: rgba(255, 255, 255, 0.65);
+  --text-color-50: rgba(255, 255, 255, 0.5);
 
   -webkit-tap-highlight-color: transparent;
 }
@@ -31,7 +18,8 @@ body {
   color: var(--text-color-100);
   margin: 0;
   padding: 16px;
-  padding-top: env(safe-area-inset-top);
+  padding-top: max(16px, env(safe-area-inset-top));
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -125,17 +113,4 @@ p {
     border-radius: 70px;
     overflow: hidden;
     color: var(--text-color-65);
-}
-
-/* 1. Remove blend mode/opacity from paragraphs that contain images */
-.article-content p:has(img) {
-    opacity: 1 !important;
-    mix-blend-mode: normal !important;
-}
-
-/* 2. Ensure the images themselves are clean */
-.article-content img {
-    opacity: 1 !important;
-    mix-blend-mode: normal !important;
-    display: block; /* Prevents inline spacing issues */
 }

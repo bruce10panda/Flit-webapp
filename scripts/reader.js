@@ -4,12 +4,6 @@
 const SOURCES_FILE = 'feeds.txt'; 
 const feedContainer = document.querySelector('.feed');
 
-const proxySources = [
-  'https://api.allorigins.win/raw?url=',
-  'https://corsproxy.io/?',
-  'https://api.codetabs.com/v1/proxy?quest=',
-];
-
 /**
  * Core Logic: Fetching & Parsing
  */
@@ -41,14 +35,6 @@ function extractImage(item) {
   const content = item.querySelector('description, content')?.textContent || '';
   const match = content.match(/<img[^>]+src=["']([^"']+)["']/i);
   return match ? match[1] : null;
-}
-
-function getTimeAgo(date) {
-  const seconds = Math.floor((new Date() - date) / 1000);
-  const hours = Math.floor(seconds / 3600);
-  if (hours < 1) return 'Just now';
-  if (hours < 24) return `${hours}H`;
-  return `${Math.floor(hours / 24)}D`;
 }
 
 /**
@@ -89,16 +75,11 @@ function renderPosts(allPosts) {
  */
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    // 1. Fetch profile.json instead of feeds.txt
-    const profileRes = await fetch('profile.json');
-    if (!profileRes.ok) throw new Error('Could not find profile.json');
-    const profile = await profileRes.json();
+    const profile = await loadAndApplyTheme();
+    if (!profile) throw new Error('Could not load profile.json');
 
-    // 2. Apply Theme from the first space
-    const activeSpace = profile.spaces[0]; 
-    if (activeSpace && typeof applyProfileTheme === 'function') {
-        applyProfileTheme(activeSpace.theme);
-        // Update UI labels
+    const activeSpace = profile.spaces[0];
+    if (activeSpace) {
         document.querySelector('h1').textContent = activeSpace.name;
     }
 

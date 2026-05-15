@@ -1,12 +1,12 @@
 {
     "spaces": [
         {
-            "name": "Apple News",
+            "name": "Tech News",
             "theme": {
-                "base-hue": 240,
+                "base-hue": 210,
                 "hue-offset": 20,
-                "saturation": 50,
-                "lightness": -0.8
+                "saturation": 30,
+                "lightness": -0.9
             },
             "feeds": [
                 "https://9to5mac.com/feed/",

@@ -24,6 +24,7 @@
     align-items: center;
     gap: 12px;
     color: var(--text-color-65);
+    mix-blend-mode: normal;
     font-weight: 500;
 }
 
@@ -42,9 +43,16 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 4;
     overflow: hidden;
+    color: var(--text-color-100) !important;
+    mix-blend-mode: normal !important;
+    opacity: 0.75;
 }
 
 .author-time {
     display: flex;
     justify-content: space-between;
+}
+
+.reload {
+    cursor: pointer;
 }
