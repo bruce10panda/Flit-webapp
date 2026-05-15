@@ -85,8 +85,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                               xmlDoc.querySelector('channel > image')?.getAttribute('url') || null;
 
             Array.from(xmlDoc.querySelectorAll('item, entry')).forEach(item => {
-                const pubDateStr = item.querySelector('pubDate, published, updated')?.textContent;
-                const postDate = pubDateStr ? new Date(pubDateStr) : new Date(0);
+                const pubDateStr = item.querySelector('pubDate, published, updated')?.textContent?.trim();
+                const parsedDate = pubDateStr ? new Date(pubDateStr) : null;
+                const postDate = parsedDate && !isNaN(parsedDate) ? parsedDate : new Date(0);
                 const authorEl = item.querySelector('dc\\:creator, creator, author > name, author');
                 let authorName = authorEl ? authorEl.textContent.trim() : '';
 

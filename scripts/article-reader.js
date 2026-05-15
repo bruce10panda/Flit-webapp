@@ -163,7 +163,13 @@ async function loadArticle() {
             try {
                 const domain = new URL(articleUrl).hostname.replace('www.', '');
                 if (btnText) btnText.textContent = `Open on ${domain}`;
-                actionBtn.onclick = () => window.open(articleUrl, '_blank');
+                actionBtn.onclick = () => {
+                    if (window.__TAURI__) {
+                        window.__TAURI__.shell.open(articleUrl);
+                    } else {
+                        window.open(articleUrl, '_blank');
+                    }
+                };
             } catch (e) {
                 if (btnText) btnText.textContent = 'Open Original Source';
             }

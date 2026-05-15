@@ -10,9 +10,12 @@ const proxySources = [
 
 function getTimeAgo(dateStr) {
     const date = new Date(dateStr);
+    if (isNaN(date)) return '';
     const seconds = Math.floor((new Date() - date) / 1000);
+    const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(seconds / 3600);
-    if (hours < 1) return 'Just now';
+    if (minutes < 1) return 'Just now';
+    if (minutes < 60) return `${minutes}m`;
     if (hours < 24) return `${hours}H`;
     return `${Math.floor(hours / 24)}D`;
 }
