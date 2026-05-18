@@ -31,8 +31,8 @@
             "name": "World News",
             "emoji": "🌐",
             "theme": {
-                "top": "hsl(140, 40%, 8%)",
-                "bottom": "hsl(140, 40%, 4%)"
+                "top": "hsl(0, 75%, 40%)",
+                "bottom": "hsl(20, 80%, 40%)"
             },
             "feeds": [
                 "https://feeds.nos.nl/nosnieuwsalgemeen",
