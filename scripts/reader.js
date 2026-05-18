@@ -191,7 +191,7 @@ function createPostElement(postData) {
         <h2 class="title">${postData.title}</h2>
         <p class="description">${postData.description}</p>
         <div class="author-time">
-            <p class="author">${postData.author}</p>
+            <p class="author">${postData.readTime} min read</p>
             <p class="time">${getTimeAgo(postData.date)}</p>
         </div>
     `;
@@ -267,15 +267,20 @@ document.addEventListener('DOMContentLoaded', async () => {
                     ? authorName
                     : feedTitle;
 
+                const rawDesc = (item.querySelector('description, summary')?.textContent || '').replace(/<[^>]+>/g, '').trim();
+                const wordCount = rawDesc.split(/\s+/).filter(Boolean).length;
+                const readTime = Math.max(1, Math.round(wordCount / 220));
+
                 allPosts.push({
                     feedTitle,
                     feedImage,
                     title: item.querySelector('title')?.textContent?.trim() || 'Untitled',
                     link: item.querySelector('link')?.getAttribute('href') || item.querySelector('link')?.textContent?.trim(),
                     author: finalAuthor,
-                    description: (item.querySelector('description, summary')?.textContent || '').replace(/<[^>]+>/g, '').trim().slice(0, 150) + '...',
+                    description: rawDesc.slice(0, 150) + (rawDesc.length > 150 ? '...' : ''),
                     image: extractImage(item),
-                    date: postDate
+                    date: postDate,
+                    readTime,
                 });
             });
         });
