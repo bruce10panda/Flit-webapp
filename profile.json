@@ -4,8 +4,8 @@
             "name": "Tech News",
             "emoji": "💻",
             "theme": {
-                "top": "hsl(220, 60%, 90%)",
-                "bottom": "hsl(220, 60%, 95%)"
+                "top": "hsl(220, 60%, 10%)",
+                "bottom": "hsl(280, 60%, 10%)"
             },
             "feeds": [
                 "https://arstechnica.com/feed/",
@@ -17,8 +17,8 @@
             "name": "Apple News",
             "emoji": "🍎",
             "theme": {
-                "top": "hsl(0, 75%, 90%)",
-                "bottom": "hsl(20, 75%, 90%)"
+                "top": "hsl(0, 0%, 5%)",
+                "bottom": "hsl(0, 0%, 5%)"
             },
             "feeds": [
                 "https://9to5mac.com/feed/",
@@ -35,9 +35,8 @@
                 "bottom": "hsl(140, 40%, 4%)"
             },
             "feeds": [
-                "https://feeds.bbci.co.uk/news/world/rss.xml",
-                "https://www.theguardian.com/world/rss",
-                "https://www.vox.com/rss/world-politics/index.xml"
+                "https://feeds.nos.nl/nosnieuwsalgemeen",
+                "https://www.nu.nl/rss"
             ]
         }
     ],
