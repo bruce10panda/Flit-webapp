@@ -1,4 +1,10 @@
 const feedContainer = document.querySelector('.feed');
+const PAGE_SIZE = 30;
+
+let allPosts = [];
+let currentOffset = 0;
+let sentinel = null;
+let observer = null;
 
 async function fetchFeed(url) {
     const attempts = [
@@ -29,33 +35,58 @@ function extractImage(item) {
     return match ? match[1] : null;
 }
 
-function renderPosts(allPosts) {
+function createPostElement(postData) {
+    const post = document.createElement('div');
+    post.className = 'post overlay';
+    post.onclick = () => {
+        sessionStorage.setItem('currentPostData', JSON.stringify(postData));
+        window.location.href = `article.html?url=${encodeURIComponent(postData.link)}`;
+    };
+
+    post.innerHTML = `
+        <div class="source">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain=${postData.link}" alt="Source Icon">
+            <p class="source-name">${postData.feedTitle}</p>
+        </div>
+        ${postData.image ? `<img class="post-image" src="${postData.image}" alt="Post Image" onerror="this.remove()">` : ''}
+        <h2 class="title">${postData.title}</h2>
+        <p class="description">${postData.description}</p>
+        <div class="author-time">
+            <p class="author">${postData.author}</p>
+            <p class="time">${getTimeAgo(postData.date)}</p>
+        </div>
+    `;
+
+    return post;
+}
+
+function appendBatch() {
+    const batch = allPosts.slice(currentOffset, currentOffset + PAGE_SIZE);
+    if (batch.length === 0) return;
+
+    batch.forEach(postData => feedContainer.insertBefore(createPostElement(postData), sentinel));
+    currentOffset += batch.length;
+
+    if (currentOffset >= allPosts.length) {
+        observer.disconnect();
+        sentinel.remove();
+        sentinel = null;
+    }
+}
+
+function renderPosts() {
     feedContainer.innerHTML = `<p class="feed-name">Recent Updates</p>`;
+    currentOffset = 0;
 
-    allPosts.forEach(postData => {
-        const post = document.createElement('div');
-        post.className = 'post overlay';
-        post.onclick = () => {
-            sessionStorage.setItem('currentPostData', JSON.stringify(postData));
-            window.location.href = `article.html?url=${encodeURIComponent(postData.link)}`;
-        };
+    sentinel = document.createElement('div');
+    sentinel.className = 'feed-sentinel';
+    feedContainer.appendChild(sentinel);
 
-        post.innerHTML = `
-            <div class="source">
-                <img src="https://www.google.com/s2/favicons?sz=64&domain=${postData.link}" alt="Source Icon">
-                <p class="source-name">${postData.feedTitle}</p>
-            </div>
-            ${postData.image ? `<img class="post-image" src="${postData.image}" alt="Post Image" onerror="this.remove()">` : ''}
-            <h2 class="title">${postData.title}</h2>
-            <p class="description">${postData.description}</p>
-            <div class="author-time">
-                <p class="author">${postData.author}</p>
-                <p class="time">${getTimeAgo(postData.date)}</p>
-            </div>
-        `;
+    observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) appendBatch();
+    }, { rootMargin: '200px' });
 
-        feedContainer.appendChild(post);
-    });
+    observer.observe(sentinel);
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -74,8 +105,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const feedUrls = activeSpace.feeds || [];
         feedContainer.innerHTML = `<p class="feed-name">Loading ${activeSpace.name}...</p>`;
 
-        let allPosts = [];
-
         const feedPromises = feedUrls.map(async (url) => {
             const xmlDoc = await fetchFeed(url);
             if (!xmlDoc) return;
@@ -91,7 +120,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const authorEl = item.querySelector('dc\\:creator, creator, author > name, author');
                 let authorName = authorEl ? authorEl.textContent.trim() : '';
 
-                // Some feeds encode author as "email@example.com (Display Name)"
                 if (authorName.includes('@') && authorName.includes('(')) {
                     authorName = authorName.match(/\(([^)]+)\)/)?.[1] || authorName;
                 }
@@ -117,7 +145,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         allPosts.sort((a, b) => b.date - a.date);
 
         if (allPosts.length > 0) {
-            renderPosts(allPosts.slice(0, 30));
+            renderPosts();
         } else {
             feedContainer.innerHTML = '<p class="feed-name">No posts found.</p>';
         }

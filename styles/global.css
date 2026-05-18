@@ -37,6 +37,7 @@ body {
 
 .material-symbols-rounded {
     font-size: 20px !important;
+    font-variation-settings: 'FILL' 1;
 }
 
 .overlay {

@@ -1,3 +1,7 @@
+document.querySelector('#close-sidebar-btn')?.addEventListener('click', () => {
+    window.location.href = 'index.html';
+});
+
 document.addEventListener('DOMContentLoaded', async () => {
     const profile = await loadAndApplyTheme();
     if (!profile) return;
