@@ -42,6 +42,7 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 4;
+    line-clamp: 4;
     overflow: hidden;
     color: var(--text-color-100) !important;
     mix-blend-mode: normal !important;
@@ -55,4 +56,27 @@
 
 .reload {
     cursor: pointer;
+}
+
+.post-link {
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 3px 10px;
+    border-radius: 70px;
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--text-color-65);
+}
+
+.tweet-body {
+    color: var(--text-color-100) !important;
+    mix-blend-mode: normal !important;
+    opacity: 0.85;
+    font-size: 15px;
+    line-height: 1.55;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 8;
+    line-clamp: 8;
+    overflow: hidden;
 }

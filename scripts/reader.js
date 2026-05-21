@@ -125,6 +125,7 @@ function escapeRegex(s) {
     return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+
 function setFilter(term, type) {
     if (activeFilter?.term === term) term = null;
     activeFilter = term ? { term, type } : null;
@@ -161,6 +162,21 @@ async function fetchFeed(url) {
     }
 }
 
+async function fetchBlueskyFeed(handle) {
+    const resolved = handle.includes('.') ? handle : `${handle}.bsky.social`;
+
+    const [feedResult, profileResult] = await Promise.allSettled([
+        fetchFeed(`https://bsky.app/profile/${resolved}/rss`),
+        fetch(`https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=${resolved}`)
+            .then(r => r.json()),
+    ]);
+
+    return {
+        xmlDoc: feedResult.status === 'fulfilled' ? feedResult.value : null,
+        avatar: profileResult.status === 'fulfilled' ? profileResult.value?.avatar ?? null : null,
+    };
+}
+
 function extractImage(item) {
     const media = item.getElementsByTagNameNS('*', 'thumbnail')[0] ||
                   item.getElementsByTagNameNS('*', 'content')[0];
@@ -177,24 +193,42 @@ function extractImage(item) {
 function createPostElement(postData) {
     const post = document.createElement('div');
     post.className = 'post overlay';
-    post.onclick = () => {
-        sessionStorage.setItem('currentPostData', JSON.stringify(postData));
-        window.location.href = `article.html?url=${encodeURIComponent(postData.link)}`;
-    };
 
-    post.innerHTML = `
-        <div class="source">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=${postData.link}" alt="Source Icon">
-            <p class="source-name">${postData.feedTitle}</p>
-        </div>
-        ${postData.image ? `<img class="post-image" src="${postData.image}" alt="Post Image" onerror="this.remove()">` : ''}
-        <h2 class="title">${postData.title}</h2>
-        <p class="description">${postData.description}</p>
-        <div class="author-time">
-            <p class="author">${postData.readTime} min read</p>
-            <p class="time">${getTimeAgo(postData.date)}</p>
-        </div>
-    `;
+    if (postData.isBluesky) {
+        post.classList.add('twitter-post');
+        post.onclick = () => window.open(postData.link, '_blank');
+
+        post.innerHTML = `
+            <div class="source">
+                <img src="${postData.feedImage || 'https://www.google.com/s2/favicons?sz=64&domain=bsky.app'}" alt="Avatar" onerror="this.src='https://www.google.com/s2/favicons?sz=64&domain=bsky.app'">
+                <p class="source-name">${postData.feedTitle}</p>
+            </div>
+            <p class="tweet-body">${postData.title}</p>
+            ${postData.externalLink ? `<a class="post-link overlay" href="${postData.externalLink}" target="_blank" onclick="event.stopPropagation()"><p>link</p></a>` : ''}
+            <div class="author-time">
+                <p class="time">${getTimeAgo(postData.date)}</p>
+            </div>
+        `;
+    } else {
+        post.onclick = () => {
+            sessionStorage.setItem('currentPostData', JSON.stringify(postData));
+            window.location.href = `article.html?url=${encodeURIComponent(postData.link)}`;
+        };
+
+        post.innerHTML = `
+            <div class="source">
+                <img src="https://www.google.com/s2/favicons?sz=64&domain=${postData.link}" alt="Source Icon">
+                <p class="source-name">${postData.feedTitle}</p>
+            </div>
+            ${postData.image ? `<img class="post-image" src="${postData.image}" alt="Post Image" onerror="this.remove()">` : ''}
+            <h2 class="title">${postData.title}</h2>
+            <p class="description">${postData.description}</p>
+            <div class="author-time">
+                <p class="author">${postData.readTime} min read</p>
+                <p class="time">${getTimeAgo(postData.date)}</p>
+            </div>
+        `;
+    }
 
     return post;
 }
@@ -245,12 +279,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         feedContainer.innerHTML = `<p class="feed-name">Loading ${activeSpace.name}...</p>`;
 
         const feedPromises = feedUrls.map(async (url) => {
-            const xmlDoc = await fetchFeed(url);
+            const isBluesky = url.startsWith('@') || /bsky\.app/i.test(url);
+
+            let xmlDoc;
+            let blueskyAvatar = null;
+            if (url.startsWith('@')) {
+                const result = await fetchBlueskyFeed(url.slice(1));
+                xmlDoc = result.xmlDoc;
+                blueskyAvatar = result.avatar;
+            } else {
+                xmlDoc = await fetchFeed(url);
+            }
             if (!xmlDoc) return;
 
             const feedTitle = xmlDoc.querySelector('channel > title, feed > title')?.textContent?.trim() || 'Unknown Source';
-            const feedImage = xmlDoc.querySelector('channel > image > url, feed > logo')?.textContent?.trim() ||
-                              xmlDoc.querySelector('channel > image')?.getAttribute('url') || null;
+            const feedImage = isBluesky
+                ? blueskyAvatar
+                : (xmlDoc.querySelector('channel > image > url, feed > logo')?.textContent?.trim() ||
+                   xmlDoc.querySelector('channel > image')?.getAttribute('url') || null);
 
             Array.from(xmlDoc.querySelectorAll('item, entry')).forEach(item => {
                 const pubDateStr = item.querySelector('pubDate, published, updated')?.textContent?.trim();
@@ -267,20 +313,31 @@ document.addEventListener('DOMContentLoaded', async () => {
                     ? authorName
                     : feedTitle;
 
-                const rawDesc = (item.querySelector('description, summary')?.textContent || '').replace(/<[^>]+>/g, '').trim();
+                const rawDescHtml = item.querySelector('description, summary')?.textContent || '';
+                const rawDesc = rawDescHtml.replace(/<[^>]+>/g, '').trim();
                 const wordCount = rawDesc.split(/\s+/).filter(Boolean).length;
                 const readTime = Math.max(1, Math.round(wordCount / 220));
+
+                const link = item.querySelector('link')?.getAttribute('href') || item.querySelector('link')?.textContent?.trim();
+                const rawTitle = item.querySelector('title')?.textContent?.trim();
+                const title = isBluesky ? rawDesc : (rawTitle || 'Untitled');
+
+                const urlMatch = isBluesky ? rawDesc.match(/https?:\/\/[^\s)>\]"]+/) : null;
+                const externalLink = urlMatch ? urlMatch[0].replace(/[.,;!?]+$/, '') : null;
+                const displayTitle = externalLink ? title.replace(urlMatch[0], '').trim() : title;
 
                 allPosts.push({
                     feedTitle,
                     feedImage,
-                    title: item.querySelector('title')?.textContent?.trim() || 'Untitled',
-                    link: item.querySelector('link')?.getAttribute('href') || item.querySelector('link')?.textContent?.trim(),
+                    title: displayTitle,
+                    link,
                     author: finalAuthor,
                     description: rawDesc.slice(0, 150) + (rawDesc.length > 150 ? '...' : ''),
                     image: extractImage(item),
                     date: postDate,
                     readTime,
+                    isBluesky,
+                    externalLink,
                 });
             });
         });

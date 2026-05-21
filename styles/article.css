@@ -96,6 +96,7 @@ img, video { max-width: 100%; height: auto; }
 .post-image { margin-bottom: 8px; object-fit: cover; }
 .main-article-img { margin-bottom: 24px; }
 .article-content img, .article-content video { margin: 1.2rem 0; border-radius: 10px; }
+.article-content img[src$=".svg"], .article-content svg { display: none; }
 
 /* Blend mode from the parent p can bleed onto images */
 .article-content p:has(img) {

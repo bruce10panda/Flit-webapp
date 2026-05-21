@@ -8,10 +8,14 @@
                 "bottom": "hsl(280, 60%, 10%)"
             },
             "feeds": [
-                "https://arstechnica.com/feed/",
-                "https://www.theverge.com/rss/index.xml",
-                "https://www.wired.com/feed/rss"
-            ]
+    "https://www.xgn.nl/feed",
+    "https://www.techpulse.be/feed/",
+    "https://nl.ign.com/feed.xml",
+    "https://www.iculture.nl/feed/",
+    "https://feeds.feedburner.com/tweakers/mixed",
+    "https://www.androidplanet.nl/feed/",
+    "https://www.figma.com/release-notes/feed/atom.xml"
+]
         },
         {
             "name": "Apple News",
@@ -28,16 +32,31 @@
             ]
         },
         {
-            "name": "World News",
-            "emoji": "🌐",
+            "name": "Nederlands Nieuws",
+            "emoji": "🇳🇱",
             "theme": {
                 "top": "hsl(0, 75%, 40%)",
                 "bottom": "hsl(20, 80%, 40%)"
             },
             "feeds": [
-                "https://feeds.nos.nl/nosnieuwsalgemeen",
-                "https://www.nu.nl/rss"
-            ]
+    "https://feeds.nos.nl/nosnieuwsalgemeen",
+    "https://www.delimburger.nl/rss"
+]
+        },
+        {
+            "name": "World News",
+            "emoji": "🌍",
+            "theme": {
+                "top": "hsl(90, 75%, 20%)",
+                "bottom": "hsl(110, 80%, 20%)"
+            },
+            "feeds": [
+    "@nytimes.com",
+    "@theguardian.com",
+    "@washingtonpost.com",
+    "@bbcnews-world-rss.bsky.social",
+    "@apnews-world-rss.bsky.social"
+]
         }
     ],
     "settings": {
