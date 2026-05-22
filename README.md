@@ -2,9 +2,9 @@
 ![info](https://i.ibb.co/Hw0CqmG/readmeheader.png)
 
 
-# Fwip
+# Flit
 
-Fwip is a customizable RSS reader, with support for podcasts, youtube, Twitter/X and bluesky.
+Flit is a customizable RSS reader, with support for podcasts, youtube, Twitter/X and bluesky.
 
 
 ## Features
@@ -22,4 +22,4 @@ Fwip is a customizable RSS reader, with support for podcasts, youtube, Twitter/X
 It's in ```development```
 
 ## Where's the app?
-it's in another repository for now. https://github.com/bruce10panda/Fwip
+it's in another repository for now. https://github.com/bruce10panda/Flit
