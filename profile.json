@@ -64,6 +64,7 @@
         "language": "en-US"
     },
     "preferences": {
-        "experimental_reader": true
+        "experimental_reader": true,
+        "open_in_reader": false
     }
 }

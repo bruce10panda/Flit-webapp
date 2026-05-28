@@ -7,6 +7,7 @@ let activeFilter = null;
 let currentOffset = 0;
 let sentinel = null;
 let observer = null;
+let openInReader = true;
 
 const STOP_WORDS = new Set([
     // English
@@ -211,8 +212,12 @@ function createPostElement(postData) {
         `;
     } else {
         post.onclick = () => {
-            sessionStorage.setItem('currentPostData', JSON.stringify(postData));
-            window.location.href = `article.html?url=${encodeURIComponent(postData.link)}`;
+            if (openInReader) {
+                sessionStorage.setItem('currentPostData', JSON.stringify(postData));
+                window.location.href = `article.html?url=${encodeURIComponent(postData.link)}`;
+            } else {
+                window.open(postData.link, '_blank');
+            }
         };
 
         post.innerHTML = `
@@ -268,6 +273,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const profile = await loadAndApplyTheme();
         if (!profile) throw new Error('Could not load profile.json');
+
+        openInReader = profile.preferences?.open_in_reader !== false;
 
         const activeIndex = parseInt(localStorage.getItem('activeSpaceIndex') || '0', 10);
         const activeSpace = profile.spaces[activeIndex] || profile.spaces[0];
