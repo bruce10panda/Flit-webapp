@@ -1,13 +1,9 @@
 :root {
     /* Set dynamically by applyProfileTheme() in script.js */
-    --bg-top: transparent;
-    --bg-bottom: transparent;
-    --text-color-100: white;
-    --text-color-80: rgba(255, 255, 255, 0.8);
-    --text-color-65: rgba(255, 255, 255, 0.65);
-    --text-color-50: rgba(255, 255, 255, 0.5);
-    --text-color-5: rgba(255, 255, 255, 0.05);
-    --blend-mode: plus-lighter;
+    --theme-bg: transparent;
+    --theme-fg: white;
+    --theme-fg-64: rgba(255, 255, 255, 0.64);
+    --theme-fg-5: rgba(255, 255, 255, 0.05);
 
     -webkit-tap-highlight-color: transparent;
 }
@@ -17,10 +13,8 @@ html {
 }
 
 body {
-    background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom), var(--bg-top));
-    background-size: 100% 800vh;
-    background-repeat: repeat-y;
-    color: var(--text-color-100);
+    background: var(--theme-bg);
+    color: var(--theme-fg);
     margin: 0;
     padding: 16px;
     padding-top: max(16px, env(safe-area-inset-top));
@@ -51,8 +45,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--text-color-50);
-    mix-blend-mode: overlay;
+    background: var(--theme-fg-5);
     z-index: -1;
 }
 
@@ -99,8 +92,7 @@ h2 {
 
 p {
     margin: 0;
-    color: var(--text-color-50);
-    mix-blend-mode: var(--blend-mode);
+    color: var(--theme-fg-64);
     font-size: 14px;
 }
 
@@ -127,7 +119,7 @@ p {
     padding: 4px 10px;
     border-radius: 70px;
     overflow: hidden;
-    color: var(--text-color-50);
+    color: var(--theme-fg);
     cursor: pointer;
     white-space: nowrap;
     flex-shrink: 0;
@@ -135,19 +127,18 @@ p {
 }
 
 .filter.filter-active {
-    color: var(--text-color-100);
-    box-shadow: inset 0 0 0 1.5px var(--text-color-65);
+    color: var(--theme-fg);
+    box-shadow: inset 0 0 0 1.5px var(--theme-fg-64);
 }
 
 .filter p {
     color: inherit;
-    mix-blend-mode: normal;
 }
 
 hr {
     border: none;
     height: 1px;
-    background: var(--text-color-100);
+    background: var(--theme-fg);
     opacity: 0.1;
     width: 100%;
     margin: 0;

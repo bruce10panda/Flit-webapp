@@ -23,8 +23,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    color: var(--text-color-65);
-    mix-blend-mode: normal;
+    color: var(--theme-fg-64);
     font-weight: 500;
 }
 
@@ -44,9 +43,7 @@
     -webkit-line-clamp: 4;
     line-clamp: 4;
     overflow: hidden;
-    color: var(--text-color-100) !important;
-    mix-blend-mode: normal !important;
-    opacity: 0.75;
+    color: var(--theme-fg-64) !important;
 }
 
 .author-time {
@@ -65,13 +62,11 @@
     border-radius: 70px;
     overflow: hidden;
     text-decoration: none;
-    color: var(--text-color-65);
+    color: var(--theme-fg-64);
 }
 
 .tweet-body {
-    color: var(--text-color-100) !important;
-    mix-blend-mode: normal !important;
-    opacity: 0.85;
+    color: var(--theme-fg-64) !important;
     font-size: 15px;
     line-height: 1.55;
     display: -webkit-box;

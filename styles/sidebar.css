@@ -19,13 +19,11 @@
 
 .list-option p:first-child {
     font-size: 16px;
-    color: var(--text-color-100);
-    mix-blend-mode: normal;
+    color: var(--theme-fg);
 }
 
 .list-option p:last-child {
     font-size: 16px;
-    color: var(--text-color-80);
+    color: var(--theme-fg-64);
     font-weight: 400;
-    mix-blend-mode: var(--blend-mode);
 }

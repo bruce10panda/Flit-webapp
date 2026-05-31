@@ -4,7 +4,7 @@
     display: flex;
     flex-direction: column;
     font-family: 'DM Sans', sans-serif;
-    color: var(--text-color-100);
+    color: var(--theme-fg);
 }
 
 .post { gap: 20px; max-width: 900px; }
@@ -23,7 +23,7 @@
     margin: 0;
     font-size: 1rem;
     line-height: 1.75;
-    color: var(--text-color-100);
+    color: var(--theme-fg);
 }
 
 .source {
@@ -44,7 +44,7 @@
 .article-content h1, .article-content h2, .article-content h3,
 .article-content h4, .article-content h5, .article-content h6 {
     margin: 1.2rem 0 0.5rem 0;
-    color: var(--text-color-100);
+    color: var(--theme-fg);
     font-family: 'Bricolage Grotesque', sans-serif;
     line-height: 1.2;
     letter-spacing: -0.01em;
@@ -55,12 +55,9 @@
 .article-content h3 { font-size: 1.15rem; }
 .article-content h4, .article-content h5, .article-content h6 { font-size: 1rem; }
 
-/* Overrides global p color and mix-blend-mode with article-specific values */
 .article-content p,
 .article-content li {
-    color: var(--text-color-100) !important;
-    mix-blend-mode: normal !important;
-    opacity: 0.75;
+    color: var(--theme-fg-64);
 }
 
 .article-content p { margin: 0 0 1rem 0; font-size: 1.05rem; }
@@ -73,9 +70,7 @@
 }
 
 .source-author .author, .time, .article-meta p {
-    color: var(--text-color-65);
-    mix-blend-mode: normal;
-    opacity: 1;
+    color: var(--theme-fg-64);
 }
 
 /* ── Media ── */
@@ -88,9 +83,6 @@ img, video { max-width: 100%; height: auto; }
     width: 100%;
     border-radius: 12px;
     display: block;
-    /* Reset blend mode that leaks in from global p/li rules */
-    opacity: 1 !important;
-    mix-blend-mode: normal !important;
 }
 
 .post-image { margin-bottom: 8px; object-fit: cover; }
@@ -98,18 +90,12 @@ img, video { max-width: 100%; height: auto; }
 .article-content img, .article-content video { margin: 1.2rem 0; border-radius: 10px; }
 .article-content img[src$=".svg"], .article-content svg { display: none; }
 
-/* Blend mode from the parent p can bleed onto images */
-.article-content p:has(img) {
-    opacity: 1 !important;
-    mix-blend-mode: normal !important;
-}
-
 /* ── Links ── */
 
 .article-content a {
     color: inherit;
     text-decoration: none;
-    border-bottom: 1.5px solid var(--link-underline, var(--text-color-50));
+    border-bottom: 1.5px solid var(--link-underline, var(--theme-fg-64));
     padding-bottom: 1px;
     opacity: 0.85;
     transition: opacity 0.15s ease, border-color 0.15s ease;
@@ -117,13 +103,13 @@ img, video { max-width: 100%; height: auto; }
 
 .article-content a:hover {
     opacity: 1;
-    border-bottom-color: var(--text-color-100);
+    border-bottom-color: var(--theme-fg);
 }
 
 /* ── Blockquote ── */
 
 .article-content blockquote {
-    border-left: 3px solid var(--text-color-50);
+    border-left: 3px solid var(--theme-fg-64);
     padding: 4px 0 4px 20px;
     margin: 1.6rem 0;
     font-style: italic;
@@ -154,8 +140,7 @@ img, video { max-width: 100%; height: auto; }
     padding-left: 1.5rem;
     font-size: 1.05rem;
     line-height: 1.7;
-    color: var(--text-color-100);
-    opacity: 0.9;
+    color: var(--theme-fg-64);
 }
 
 .article-content ul li::before {
@@ -166,7 +151,7 @@ img, video { max-width: 100%; height: auto; }
     width: 5px;
     height: 5px;
     border-radius: 50%;
-    background: var(--text-color-65);
+    background: var(--theme-fg-64);
 }
 
 .article-content ol { counter-reset: article-ol; }
@@ -180,7 +165,7 @@ img, video { max-width: 100%; height: auto; }
     font-size: 0.78rem;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
-    color: var(--text-color-65);
+    color: var(--theme-fg-64);
     line-height: 1.75;
     width: 1.1rem;
     text-align: right;
@@ -199,7 +184,7 @@ img, video { max-width: 100%; height: auto; }
 
 .article-content pre, .article-content code {
     font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    background: var(--text-color-50);
+    background: var(--theme-fg-64);
     border-radius: 6px;
     font-size: 0.875rem;
 }
@@ -223,7 +208,7 @@ img, video { max-width: 100%; height: auto; }
 .article-content figcaption {
     font-size: 0.78rem;
     letter-spacing: 0.03em;
-    color: var(--text-color-65);
+    color: var(--theme-fg-64);
     text-align: center;
     margin-top: 8px;
     opacity: 0.7;
@@ -235,7 +220,7 @@ img, video { max-width: 100%; height: auto; }
 .article-content hr {
     border: none;
     height: 1px;
-    background: var(--text-color-50);
+    background: var(--theme-fg-64);
     margin: 2rem 0;
     opacity: 0.4;
 }
@@ -243,7 +228,7 @@ img, video { max-width: 100%; height: auto; }
 .article-meta {
     margin-top: 24px;
     padding-top: 20px;
-    border-top: 1px solid var(--text-color-50);
+    border-top: 1px solid var(--theme-fg-64);
     text-align: center;
 }
 
@@ -261,6 +246,5 @@ img, video { max-width: 100%; height: auto; }
 }
 
 .btn span {
-    color: var(--text-color-65);
-    mix-blend-mode: var(--blend-mode);
+    color: var(--theme-fg-64);
 }

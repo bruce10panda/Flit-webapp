@@ -25,28 +25,27 @@ function getTimeAgo(dateStr) {
 const applyProfileTheme = (theme) => {
     if (!theme) return;
 
-    root.style.setProperty('--bg-top',    theme.top);
-    root.style.setProperty('--bg-bottom', theme.bottom);
+    const { hue1 = 220, hue2 = 220, mode = 'dark' } = theme;
+    const dark = mode !== 'light';
 
-    // Parse lightness from the top color to pick text color scheme
-    const lMatch = theme.top.match(/(\d+(?:\.\d+)?)%\s*\)/);
-    const lightness = lMatch ? parseFloat(lMatch[1]) : 20;
+    // bg: solid color derived from hue1
+    const bg = dark
+        ? `hsl(${hue1}, 35%, 8%)`
+        : `hsl(${hue1}, 30%, 93%)`;
 
-    if (lightness > 50) {
-        root.style.setProperty('--text-color-100', 'hsl(0, 0%, 10%)');
-        root.style.setProperty('--text-color-80',  'hsla(0, 0%, 10%, 0.8)');
-        root.style.setProperty('--text-color-65',  'hsla(0, 0%, 10%, 0.65)');
-        root.style.setProperty('--text-color-50',  'hsla(0, 0%, 10%, 0.45)');
-        root.style.setProperty('--link-underline',  'hsla(0, 0%, 10%, 0.4)');
-        root.style.setProperty('--blend-mode', 'normal');
-    } else {
-        root.style.setProperty('--text-color-100', 'hsl(0, 0%, 100%)');
-        root.style.setProperty('--text-color-80',  'hsla(0, 0%, 100%, 0.8)');
-        root.style.setProperty('--text-color-65',  'hsla(0, 0%, 100%, 0.65)');
-        root.style.setProperty('--text-color-50',  'hsla(0, 0%, 100%, 0.4)');
-        root.style.setProperty('--link-underline',  'hsla(0, 0%, 100%, 0.3)');
-        root.style.setProperty('--blend-mode', 'plus-lighter');
-    }
+    // fg: near-white (dark) or near-black (light) with subtle hue2 tint
+    const [fgS, fgL] = dark ? [10, 95] : [30, 12];
+    const fg   = `hsl(${hue2}, ${fgS}%, ${fgL}%)`;
+    const fg64 = `hsla(${hue2}, ${fgS}%, ${fgL}%, 0.64)`;
+    const fg5  = `hsla(${hue2}, ${fgS}%, ${fgL}%, 0.05)`;
+
+    root.style.setProperty('--theme-bg',       bg);
+    root.style.setProperty('--theme-fg',       fg);
+    root.style.setProperty('--theme-fg-64',    fg64);
+    root.style.setProperty('--theme-fg-5',     fg5);
+    root.style.setProperty('--link-underline', dark
+        ? `hsla(${hue2}, ${fgS}%, ${fgL}%, 0.3)`
+        : `hsla(${hue2}, ${fgS}%, ${fgL}%, 0.4)`);
 };
 
 // Fetches profile.json, applies the first space's theme, and returns the
