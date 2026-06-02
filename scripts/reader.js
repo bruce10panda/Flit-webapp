@@ -2,150 +2,11 @@ const feedContainer = document.querySelector('.feed');
 const PAGE_SIZE = 30;
 
 let allPosts = [];
-let filteredPosts = [];
-let activeFilter = null;
 let currentOffset = 0;
 let sentinel = null;
 let observer = null;
 let openInReader = true;
 
-const STOP_WORDS = new Set([
-    // English
-    'a','an','the','and','but','or','nor','for','yet','so',
-    'in','on','at','to','of','by','up','as','is','it','its',
-    'be','do','go','if','no','my','me','we','us','he','she','they',
-    'are','was','were','has','had','have','will','can','may','could',
-    'would','should','does','did','not','with','from','that','this',
-    'than','then','when','what','which','who','how','why','all','also',
-    'just','into','over','more','about','after','their','them','these',
-    'those','been','being','get','got','make','made','take','out','your',
-    'our','any','each','now','new','say','says','said','top','best',
-    'first','year','week','day','back','here','like','time','way','next',
-    'last','one','two','three','big','via','amid','ahead','still','even',
-    'ever','set','show','shows','look','use','want','need','come',
-    'see','find','help','give','keep','let','put','run','try','ask',
-    'seem','feel','become','mean','leave','much','many','most','some',
-    'own','same','long','old','high','low','off','open','such',
-    'every','both','few','between','before','under','while','without',
-    'where','there','once','too','very','well','only','since','again',
-    'further','through','according','report','reports','amid',
-    // Dutch
-    'de','het','een','en','van','in','is','dat','op','te','zijn','met',
-    'voor','die','aan','er','maar','om','na','bij','ook','als','nog',
-    'dan','uit','naar','zo','wel','niet','over','al','dit','hij','ze',
-    'tot','af','door','twee','drie','vier','meer','alle','veel',
-    'nieuwe','wordt','werd','waren','heeft','hebben','kan','kunnen',
-    'moet','mee','waar','hoe','wat','wie','hun','hen','ons','wij',
-    'bent','ben','geen','iets','iemand','elke','elks','hier','daar',
-    'toen','nu','toch','dus','want','want','maar','echter','want',
-    // French (ASCII only)
-    'le','la','les','de','du','des','un','une','et','au','aux',
-    'ce','se','qui','que','dans','sur','par','plus','pas','est',
-    'son','sa','ses','leur','leurs','tout','tous','avec','cette',
-    'pour','ont','fait','comme','ils','elles','nous','vous','mon',
-    'ton','nos','vos','mes','tes','ses','dont','dont','lors',
-    // German (ASCII only)
-    'der','die','das','den','dem','ein','einer','eines','eine',
-    'und','aber','auf','mit','von','bei','als','zur','zum','im',
-    'am','ab','aus','nach','vor','noch','nur','haben','hatte',
-    'wird','wurden','sind','war','sich','oder','wenn','dann','dass',
-    'nicht','auch','ich','du','wir','ihr','sie','es','man','uns',
-    'ihm','ihn','ihr','uns','euch','mein','dein','sein','kein',
-    // Spanish (ASCII only)
-    'el','los','del','al','por','para','con','sus','pero','como',
-    'son','mas','han','era','fue','ser','estar','hay','cada',
-    'esto','esta','ese','esa','esos','esas','todo','toda','muy',
-]);
-
-function extractKeywords(posts, topN = 15) {
-    const freq = new Map();
-
-    posts.forEach(post => {
-        const words = post.title
-            .replace(/['']/g, '')
-            .replace(/[^a-zA-Z0-9\s]/g, ' ')
-            .split(/\s+/)
-            .filter(w => w.length >= 2 && /^[a-zA-Z][a-zA-Z0-9]*$/.test(w) && !STOP_WORDS.has(w.toLowerCase()));
-
-        const seen = new Set();
-        words.forEach(w => {
-            const lower = w.toLowerCase();
-            if (seen.has(lower)) return;
-            seen.add(lower);
-            const entry = freq.get(lower) || { count: 0, forms: {} };
-            entry.count++;
-            entry.forms[w] = (entry.forms[w] || 0) + 1;
-            freq.set(lower, entry);
-        });
-    });
-
-    return [...freq.entries()]
-        .filter(([, e]) => e.count >= 2)
-        .sort((a, b) => b[1].count - a[1].count)
-        .slice(0, topN)
-        .map(([, e]) => Object.entries(e.forms).sort((a, b) => b[1] - a[1])[0][0]);
-}
-
-function buildFilters() {
-    const container = document.querySelector('.filters');
-    if (!container) return;
-
-    const sources = [...new Set(allPosts.map(p => p.feedTitle).filter(Boolean))];
-    const keywords = extractKeywords(allPosts);
-    const sourceSet = new Set(sources.map(s => s.toLowerCase()));
-
-    const chips = [
-        ...(sources.length > 1 ? sources.map(s => ({ label: s, type: 'source' })) : []),
-        ...keywords
-            .filter(k => !sourceSet.has(k.toLowerCase()))
-            .map(k => ({ label: k, type: 'keyword' })),
-    ];
-
-    container.innerHTML = '';
-
-    const allChip = makeFilterChip('All', true);
-    allChip.addEventListener('click', () => setFilter(null));
-    container.appendChild(allChip);
-
-    chips.forEach(({ label, type }) => {
-        const chip = makeFilterChip(label, false);
-        chip.addEventListener('click', () => setFilter(label, type));
-        container.appendChild(chip);
-    });
-}
-
-function makeFilterChip(label, active) {
-    const chip = document.createElement('div');
-    chip.className = 'filter overlay' + (active ? ' filter-active' : '');
-    chip.dataset.filter = label;
-    chip.innerHTML = `<p>${label}</p>`;
-    return chip;
-}
-
-function escapeRegex(s) {
-    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-
-function setFilter(term, type) {
-    if (activeFilter?.term === term) term = null;
-    activeFilter = term ? { term, type } : null;
-
-    if (!activeFilter) {
-        filteredPosts = [...allPosts];
-    } else if (type === 'source') {
-        filteredPosts = allPosts.filter(p => p.feedTitle === term);
-    } else {
-        const re = new RegExp(`\\b${escapeRegex(term)}\\b`, 'i');
-        filteredPosts = allPosts.filter(p => re.test(p.title));
-    }
-
-    document.querySelectorAll('.filter').forEach(chip => {
-        chip.classList.toggle('filter-active', chip.dataset.filter === (activeFilter?.term ?? 'All'));
-    });
-
-    renderPosts();
-}
 
 async function fetchFeed(url) {
     const attempts = [
@@ -216,7 +77,7 @@ function createPostElement(postData) {
                 sessionStorage.setItem('currentPostData', JSON.stringify(postData));
                 window.location.href = `article.html?url=${encodeURIComponent(postData.link)}`;
             } else {
-                window.open(postData.link, '_blank');
+                openBuiltInBrowser(postData.link);
             }
         };
 
@@ -239,13 +100,13 @@ function createPostElement(postData) {
 }
 
 function appendBatch() {
-    const batch = filteredPosts.slice(currentOffset, currentOffset + PAGE_SIZE);
+    const batch = allPosts.slice(currentOffset, currentOffset + PAGE_SIZE);
     if (batch.length === 0) return;
 
     batch.forEach(postData => feedContainer.insertBefore(createPostElement(postData), sentinel));
     currentOffset += batch.length;
 
-    if (currentOffset >= filteredPosts.length) {
+    if (currentOffset >= allPosts.length) {
         observer.disconnect();
         sentinel.remove();
         sentinel = null;
@@ -265,6 +126,10 @@ function renderPosts() {
     }, { rootMargin: '200px' });
 
     observer.observe(sentinel);
+}
+
+function openBuiltInBrowser(url) {
+    window.location.href = `browser.html?url=${encodeURIComponent(url)}`;
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -351,11 +216,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         await Promise.all(feedPromises);
         allPosts.sort((a, b) => b.date - a.date);
-        filteredPosts = [...allPosts];
 
-        buildFilters();
-
-        if (filteredPosts.length > 0) {
+        if (allPosts.length > 0) {
             renderPosts();
         } else {
             feedContainer.innerHTML = '<p class="feed-name">No posts found.</p>';

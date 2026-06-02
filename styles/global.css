@@ -74,6 +74,7 @@ body {
     border-radius: 9999px;
     overflow: hidden;
     gap: 20px;
+    cursor: pointer;
 }
 
 h1 {
@@ -101,39 +102,6 @@ p {
     flex-direction: column;
 }
 
-.filters {
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    padding-bottom: 2px;
-}
-
-.filters::-webkit-scrollbar {
-    display: none;
-}
-
-.filter {
-    padding: 4px 10px;
-    border-radius: 70px;
-    overflow: hidden;
-    color: var(--theme-fg);
-    cursor: pointer;
-    white-space: nowrap;
-    flex-shrink: 0;
-    transition: color 0.15s;
-}
-
-.filter.filter-active {
-    color: var(--theme-fg);
-    box-shadow: inset 0 0 0 1.5px var(--theme-fg-64);
-}
-
-.filter p {
-    color: inherit;
-}
 
 hr {
     border: none;

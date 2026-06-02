@@ -25,27 +25,17 @@ function getTimeAgo(dateStr) {
 const applyProfileTheme = (theme) => {
     if (!theme) return;
 
-    const { hue1 = 220, hue2 = 220, mode = 'dark' } = theme;
-    const dark = mode !== 'light';
+    const { bg = '#111111', fg = '#ffffff' } = theme;
 
-    // bg: solid color derived from hue1
-    const bg = dark
-        ? `hsl(${hue1}, 35%, 8%)`
-        : `hsl(${hue1}, 30%, 93%)`;
-
-    // fg: near-white (dark) or near-black (light) with subtle hue2 tint
-    const [fgS, fgL] = dark ? [10, 95] : [30, 12];
-    const fg   = `hsl(${hue2}, ${fgS}%, ${fgL}%)`;
-    const fg64 = `hsla(${hue2}, ${fgS}%, ${fgL}%, 0.64)`;
-    const fg5  = `hsla(${hue2}, ${fgS}%, ${fgL}%, 0.05)`;
+    const r = parseInt(fg.slice(1, 3), 16);
+    const g = parseInt(fg.slice(3, 5), 16);
+    const b = parseInt(fg.slice(5, 7), 16);
 
     root.style.setProperty('--theme-bg',       bg);
     root.style.setProperty('--theme-fg',       fg);
-    root.style.setProperty('--theme-fg-64',    fg64);
-    root.style.setProperty('--theme-fg-5',     fg5);
-    root.style.setProperty('--link-underline', dark
-        ? `hsla(${hue2}, ${fgS}%, ${fgL}%, 0.3)`
-        : `hsla(${hue2}, ${fgS}%, ${fgL}%, 0.4)`);
+    root.style.setProperty('--theme-fg-64',    `rgba(${r}, ${g}, ${b}, 0.64)`);
+    root.style.setProperty('--theme-fg-5',     `rgba(${r}, ${g}, ${b}, 0.05)`);
+    root.style.setProperty('--link-underline', `rgba(${r}, ${g}, ${b}, 0.3)`);
 };
 
 // Fetches profile.json, applies the first space's theme, and returns the

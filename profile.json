@@ -4,9 +4,8 @@
             "name": "Tech News",
             "emoji": "💻",
             "theme": {
-                "hue1": 220,
-                "hue2": 260,
-                "mode": "dark"
+                "bg": "#1D1F33",
+                "fg": "#DCC3CD"
             },
             "feeds": [
     "https://www.xgn.nl/feed",
@@ -22,9 +21,8 @@
             "name": "Apple News",
             "emoji": "🍎",
             "theme": {
-                "hue1": 210,
-                "hue2": 220,
-                "mode": "dark"
+                "bg": "#0d1520",
+                "fg": "#eff0f5"
             },
             "feeds": [
                 "https://9to5mac.com/feed/",
@@ -37,9 +35,8 @@
             "name": "Nederlands Nieuws",
             "emoji": "🇳🇱",
             "theme": {
-                "hue1": 0,
-                "hue2": 20,
-                "mode": "light"
+                "bg": "#f5e8e8",
+                "fg": "#251a12"
             },
             "feeds": [
     "https://feeds.nos.nl/nosnieuwsalgemeen",
@@ -50,9 +47,8 @@
             "name": "World News",
             "emoji": "🌍",
             "theme": {
-                "hue1": 100,
-                "hue2": 130,
-                "mode": "dark"
+                "bg": "#0e1a0c",
+                "fg": "#ecf5ee"
             },
             "feeds": [
     "@nytimes.com",
@@ -69,6 +65,6 @@
     },
     "preferences": {
         "experimental_reader": true,
-        "open_in_reader": true
+        "open_in_reader": false
     }
 }

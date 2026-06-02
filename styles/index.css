@@ -17,6 +17,7 @@
     padding: 16px;
     border-radius: 16px;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .source {
