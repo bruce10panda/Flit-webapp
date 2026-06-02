@@ -2,6 +2,25 @@ document.querySelector('#close-sidebar-btn')?.addEventListener('click', () => {
     window.location.href = 'index.html';
 });
 
+const addBtn = document.querySelector('#add-btn');
+
+addBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    addBtn.classList.toggle('open');
+});
+
+addBtn?.querySelectorAll('.add-btn-row').forEach((row, i) => {
+    row.addEventListener('click', (e) => {
+        if (!addBtn.classList.contains('open')) return;
+        e.stopPropagation();
+        if (i === 0) window.location.href = 'add-source.html';
+    });
+});
+
+document.addEventListener('click', () => {
+    addBtn?.classList.remove('open');
+});
+
 document.addEventListener('DOMContentLoaded', async () => {
     const profile = await loadAndApplyTheme();
     if (!profile) return;

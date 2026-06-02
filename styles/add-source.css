@@ -1,0 +1,107 @@
+.source-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.source-section {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.source-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.source-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 6px;
+    flex: 1;
+    min-width: 0;
+}
+
+.source-header-left p {
+    font-size: 16px;
+}
+
+.source-icon--rss {
+    color: var(--theme-fg-64);
+}
+
+.source-icon--bluesky {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    background-color: var(--theme-fg-64);
+    -webkit-mask-image: url('../assets/bluesky_icon.svg');
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-image: url('../assets/bluesky_icon.svg');
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+}
+
+.source-chevron {
+    flex-shrink: 0;
+    transition: transform 0.25s ease;
+}
+
+.source-section.open .source-chevron {
+    transform: rotate(90deg);
+}
+
+.source-body {
+    max-height: 0;
+    overflow: hidden;
+    padding-top: 0;
+    transition: max-height 0.3s ease, padding-top 0.3s ease;
+}
+
+.source-section.open .source-body {
+    max-height: 60px;
+    padding-top: 16px;
+}
+
+.source-input-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+}
+
+.source-input-pill {
+    flex: 1;
+    min-width: 0;
+    height: 44px;
+    border-radius: 59px;
+    background: var(--theme-fg-5);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+}
+
+.source-input {
+    border: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    color: var(--theme-fg-64);
+    width: 100%;
+    outline: none;
+}
+
+.source-input::placeholder {
+    color: var(--theme-fg-5);
+}

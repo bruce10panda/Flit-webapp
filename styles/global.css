@@ -66,6 +66,7 @@ body {
 .nav-top-all {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
 }
 
 .nav-top {

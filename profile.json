@@ -1,70 +1,70 @@
 {
-    "spaces": [
-        {
-            "name": "Tech News",
-            "emoji": "💻",
-            "theme": {
-                "bg": "#1D1F33",
-                "fg": "#DCC3CD"
-            },
-            "feeds": [
-    "https://www.xgn.nl/feed",
-    "https://www.techpulse.be/feed/",
-    "https://nl.ign.com/feed.xml",
-    "https://www.iculture.nl/feed/",
-    "https://feeds.feedburner.com/tweakers/mixed",
-    "https://www.androidplanet.nl/feed/",
-    "https://www.figma.com/release-notes/feed/atom.xml"
-]
-        },
-        {
-            "name": "Apple News",
-            "emoji": "🍎",
-            "theme": {
-                "bg": "#0d1520",
-                "fg": "#eff0f5"
-            },
-            "feeds": [
-                "https://9to5mac.com/feed/",
-                "https://www.macrumors.com/macrumors.xml",
-                "https://www.macworld.com/index.rss",
-                "https://sixcolors.com/feed/"
-            ]
-        },
-        {
-            "name": "Nederlands Nieuws",
-            "emoji": "🇳🇱",
-            "theme": {
-                "bg": "#f5e8e8",
-                "fg": "#251a12"
-            },
-            "feeds": [
-    "https://feeds.nos.nl/nosnieuwsalgemeen",
-    "https://www.delimburger.nl/rss"
-]
-        },
-        {
-            "name": "World News",
-            "emoji": "🌍",
-            "theme": {
-                "bg": "#0e1a0c",
-                "fg": "#ecf5ee"
-            },
-            "feeds": [
-    "@nytimes.com",
-    "@theguardian.com",
-    "@washingtonpost.com",
-    "@bbcnews-world-rss.bsky.social",
-    "@apnews-world-rss.bsky.social"
-]
-        }
-    ],
-    "settings": {
-        "global_user_id": "user_8829",
-        "language": "en-US"
+  "spaces": [
+    {
+      "name": "Tech News",
+      "emoji": "💻",
+      "theme": {
+        "bg": "#1D1F33",
+        "fg": "#DCC3CD"
+      },
+      "feeds": [
+        "https://www.xgn.nl/feed",
+        "https://www.techpulse.be/feed/",
+        "https://nl.ign.com/feed.xml",
+        "https://www.iculture.nl/feed/",
+        "https://feeds.feedburner.com/tweakers/mixed",
+        "https://www.androidplanet.nl/feed/",
+        "https://www.figma.com/release-notes/feed/atom.xml"
+      ]
     },
-    "preferences": {
-        "experimental_reader": true,
-        "open_in_reader": false
+    {
+      "name": "Apple News",
+      "emoji": "🍎",
+      "theme": {
+        "bg": "#0d1520",
+        "fg": "#eff0f5"
+      },
+      "feeds": [
+        "https://9to5mac.com/feed/",
+        "https://www.macrumors.com/macrumors.xml",
+        "https://www.macworld.com/index.rss",
+        "https://sixcolors.com/feed/"
+      ]
+    },
+    {
+      "name": "Nederlands Nieuws",
+      "emoji": "🇳🇱",
+      "theme": {
+        "bg": "#f5e8e8",
+        "fg": "#251a12"
+      },
+      "feeds": [
+        "https://feeds.nos.nl/nosnieuwsalgemeen",
+        "https://www.delimburger.nl/rss"
+      ]
+    },
+    {
+      "name": "World News",
+      "emoji": "🌍",
+      "theme": {
+        "bg": "#0A100D",
+        "fg": "#B9BAA3"
+      },
+      "feeds": [
+        "@nytimes.com",
+        "@theguardian.com",
+        "@washingtonpost.com",
+        "@bbcnews-world-rss.bsky.social",
+        "@apnews-world-rss.bsky.social"
+      ]
     }
+  ],
+  "settings": {
+    "global_user_id": "user_8829",
+    "language": "en-US"
+  },
+  "preferences": {
+    "experimental_reader": true,
+    "open_in_reader": false
+  }
 }

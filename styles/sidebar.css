@@ -22,6 +22,69 @@
     color: var(--theme-fg);
 }
 
+.add-btn-anchor {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+}
+
+.add-btn {
+    cursor: pointer;
+    user-select: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 12px;
+    border-radius: 22px;
+    background: var(--theme-fg-5);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow: hidden;
+    transition: border-radius 0.3s ease-out;
+    z-index: 10;
+}
+
+.add-btn-row {
+    display: flex;
+    align-items: center;
+}
+
+.add-btn-label {
+    font-size: 16px;
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-left: 0;
+    transition: max-width 0.3s ease, opacity 0.2s ease, margin-left 0.3s ease;
+}
+
+.add-btn-row--second {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    padding-top: 0;
+    transition: max-height 0.3s ease, opacity 0.25s ease, padding-top 0.3s ease;
+}
+
+.add-btn.open {
+    border-radius: 22px;
+}
+
+.add-btn.open .add-btn-label {
+    max-width: 120px;
+    opacity: 1;
+    margin-left: 16px;
+}
+
+.add-btn.open .add-btn-row--second {
+    max-height: 40px;
+    opacity: 1;
+    padding-top: 16px;
+}
+
 .list-option p:last-child {
     font-size: 16px;
     color: var(--theme-fg-64);
