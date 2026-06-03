@@ -4,8 +4,8 @@
       "name": "Tech News",
       "emoji": "💻",
       "theme": {
-        "bg": "#1D1F33",
-        "fg": "#DCC3CD"
+        "bg": "#151530",
+        "fg": "#d1c8da"
       },
       "feeds": [
         "https://www.xgn.nl/feed",
@@ -21,8 +21,8 @@
       "name": "Apple News",
       "emoji": "🍎",
       "theme": {
-        "bg": "#0d1520",
-        "fg": "#eff0f5"
+        "bg": "#deeff7",
+        "fg": "#373425"
       },
       "feeds": [
         "https://9to5mac.com/feed/",

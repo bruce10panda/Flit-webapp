@@ -14,6 +14,7 @@ addBtn?.querySelectorAll('.add-btn-row').forEach((row, i) => {
         if (!addBtn.classList.contains('open')) return;
         e.stopPropagation();
         if (i === 0) window.location.href = 'add-source.html';
+        if (i === 1) window.location.href = 'new-space.html';
     });
 });
 

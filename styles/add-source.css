@@ -103,5 +103,33 @@
 }
 
 .source-input::placeholder {
-    color: var(--theme-fg-5);
+    color: var(--theme-fg-64);
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%       { transform: translateX(-6px); }
+    40%       { transform: translateX(6px); }
+    60%       { transform: translateX(-4px); }
+    80%       { transform: translateX(4px); }
+}
+
+.source-input.error {
+    animation: shake 0.35s ease;
+    color: #e06c6c;
+}
+
+.source-input-row.success .source-input-pill {
+    background: var(--theme-fg-5);
+    outline: 1.5px solid var(--theme-fg-64);
+    transition: outline 0.2s ease;
+}
+
+.source-input-row .material-symbols-rounded {
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.source-input-row.success .material-symbols-rounded {
+    opacity: 0.4;
 }

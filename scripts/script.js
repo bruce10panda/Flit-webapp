@@ -46,6 +46,13 @@ async function loadAndApplyTheme() {
         if (!res.ok) throw new Error('profile.json not found');
         const profile = await res.json();
         const activeIndex = parseInt(localStorage.getItem('activeSpaceIndex') || '0', 10);
+
+        // Merge user-added feeds stored in localStorage
+        profile.spaces?.forEach((space, i) => {
+            const extra = JSON.parse(localStorage.getItem(`extraFeeds_${i}`) || '[]');
+            if (extra.length) space.feeds = [...(space.feeds || []), ...extra];
+        });
+
         const activeSpace = profile.spaces?.[activeIndex] || profile.spaces?.[0];
         if (activeSpace?.theme) applyProfileTheme(activeSpace.theme);
         return profile;
